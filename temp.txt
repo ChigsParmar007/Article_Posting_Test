@@ -1,0 +1,44 @@
+index.js
+app.js
+
+Models
+userModel.js
+
+
+Routers
+userRouter.js
+
+
+Controllers
+userController.js
+
+
+Utils
+
+
+--------------------------------------------------
+Schema
+--------------------------------------------------
+=> User Schema
+firstName: string,
+lastName: string
+UserName: string unique
+email: string,
+phone: string,
+password: string,
+confirmPassword: string
+followes: number
+following: number
+
+
+=> Topic Schema
+title: string,
+createdAt: Date,
+author: ObjectId
+
+=> Article Schema
+title: string,
+content: string,
+author: ObjectId,
+date: Date,
+published: boolean
