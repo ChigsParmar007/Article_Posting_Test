@@ -49,7 +49,6 @@ const signUp = async (req, res, next) => {
             message: err.message
         })
     }
-
 }
 
 // Login User
@@ -63,11 +62,17 @@ const signIn = async (req, res, next) => {
         })
     }
 
-    const user = await User.findOne({ userName, password })
+    const user = await User.findOne({ userName }).select('+password')
+
+    if (!user || !(await user.correctPassword(password, user.password))) {
+        return res.status(400).json({
+            status: 'Failed',
+            message: 'Check your login credentials'
+        })
+    }
 
     createSendToken(user, 201, res)
 }
-
 
 module.exports = {
     signUp,

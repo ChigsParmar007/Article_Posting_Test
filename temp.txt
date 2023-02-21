@@ -3,14 +3,18 @@ app.js
 
 Models
 userModel.js
+topicModel.js
 
 
 Routers
 userRouter.js
+topicRouter.js
 
 
 Controllers
 userController.js
+authController.js
+topicController.js
 
 
 Utils
@@ -32,12 +36,12 @@ following: number
 
 
 => Topic Schema
-title: string,
-createdAt: Date,
+topicName: string,
 author: ObjectId
+createdAt: Date,
 
 => Article Schema
-title: string,
+topic: ObjectId,
 content: string,
 author: ObjectId,
 date: Date,

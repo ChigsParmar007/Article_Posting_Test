@@ -35,7 +35,7 @@ const schema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function (element) {
-                return element === this.password;
+                return element === this.password
             },
             message: 'Password and PasswordConfirm are not the same!'
         }
@@ -48,13 +48,16 @@ const schema = new mongoose.Schema({
         type: Boolean,
         default: true,
         select: false
-    }
+    },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
 })
 
-schema.pre('save', function (next) {
+schema.pre('save', async function (next) {
     if (!this.isModified('password')) return next()
 
-    this.password = bcryptjs.hash(this.password, 12)
+    this.password = await bcryptjs.hash(this.password, 12)
 
     this.passwordConfirm = undefined
 
@@ -65,6 +68,27 @@ schema.pre(/^find/, function (next) {
     this.find({ active: { $ne: false } })
     next()
 })
+
+schema.methods.correctPassword = async function (
+    candidatePassword,
+    userPassword
+) {
+    return await bcryptjs.compare(candidatePassword, userPassword)
+}
+
+schema.methods.changedPasswordAfter = function (JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        const changedTimestamp = parseInt(
+            this.passwordChangedAt.getTime() / 1000,
+            10
+        )
+
+        return JWTTimestamp < changedTimestamp
+    }
+
+    // False means NOT changed
+    return false
+}
 
 const userSchema = mongoose.model('user', schema)
 
