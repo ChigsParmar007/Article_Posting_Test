@@ -1,0 +1,122 @@
+data: 
+
+user: 
+===>
+{
+    "firstName": "Khushi",
+    "lastName": "Baluchi",
+    "userName": "KhushiB",
+    "email": "khushi@gmail.com",
+    "phone": "7695124865",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Chirag",
+    "lastName": "parmar",
+    "userName": "ChigsP",
+    "email": "chirag@gmail.com",
+    "phone": "8154886779",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Ravi",
+    "lastName": "Gohil",
+    "userName": "RaviG",
+    "email": "ravi@gmail.com",
+    "phone": "6353934200",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+==================================================
+topic:
+===>
+{
+    "topicName": "Entertainment"
+}
+
+{
+    "topicName": "Music"
+}
+
+{
+    "topicName": "Cricket"
+}
+
+{
+    "topicName": "Politics"
+}
+
+{
+    "topicName": "Cartoon"
+}
+
+{
+    "topicName": "Anime"
+}
+
+==================================================
+article:
+===>
+{
+    "topicName": "Music",
+    "content": "Good Music is hard to find"
+}
+
+{
+    "topicName": "Cricket",
+    "content": "India vs Pakistan match is very interesting."
+}
+
+{
+    "topicName": "Politics",
+    "content": "Crupption is everywhere"
+}
+
+{
+    "topicName": "Entertainment",
+    "content": "Ranvir and Alia Just married"
+}
+
+{
+    "topicName": "Cartoon",
+    "content": "When you sad watch some Cartoons"
+}
+
+==================================================
+comment:
+===>
+{
+    "comment": "Absolutly Right",
+    "rating": 4,
+    "articleId": "63f61abbbc956fc8d0a8c5f1"
+}
+
+{
+    "comment": "Seriosly",
+    "rating": 1,
+    "articleId": "63f61b92bc956fc8d0a8c5fb"
+}
+
+{
+    "comment": "Very much fun",
+    "rating": 5,
+    "articleId": "63f61c1abc956fc8d0a8c600"
+}
+
+{
+    "comment": "yaah right",
+    "rating": 4,
+    "articleId": "63f61abbbc956fc8d0a8c5f1"
+}
+
+{
+    "comment": "Kya kre ab.",
+    "rating": 4,
+    "articleId": "63f61b29bc956fc8d0a8c5f8"
+}
+

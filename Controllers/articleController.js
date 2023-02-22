@@ -1,11 +1,12 @@
 const Article = require('../Models/articleModel')
 
+// ----------------------------------------------
 const createArticle = async (req, res, next) => {
     try {
         const article = await Article.create({
-            topicId: req.body.topicId,
+            topicName: req.body.topicName,
             content: req.body.content,
-            author: req.user._id
+            userName: req.user.userName
         })
         res.status(201).json({
             status: 'Success',
@@ -14,12 +15,13 @@ const createArticle = async (req, res, next) => {
     }
     catch (err) {
         res.status(404).json({
-            status: 'Failed',
+            status: 'Error',
             message: err.message
         })
     }
 }
 
+// -----------------------------------------------
 const getAllArticles = async (req, res, next) => {
     try {
         const articles = await Article.find()
@@ -31,29 +33,13 @@ const getAllArticles = async (req, res, next) => {
     }
     catch (err) {
         res.status(404).json({
-            status: 'Failed',
+            status: 'Error',
             message: err.message
         })
     }
 }
 
-const getArticleById = async (req, res, next) => {
-    try {
-        const article = await Article.findById(req.params.id)
-
-        res.status(200).json({
-            status: 'Success',
-            article
-        })
-    }
-    catch (err) {
-        res.status(404).json({
-            status: 'Failed',
-            message: err.message
-        })
-    }
-}
-
+// ----------------------------------------------
 const updateArticle = async (req, res, next) => {
     try {
         const article = await Article.findById(req.params.id)
@@ -61,11 +47,11 @@ const updateArticle = async (req, res, next) => {
         if (!article) {
             return res.status(404).json({
                 status: 'Failed',
-                message: 'article not found'
+                message: 'Article not found'
             })
         }
 
-        if (JSON.stringify(req.user._id) !== JSON.stringify(article.author)) {
+        if (JSON.stringify(req.user.userName) !== JSON.stringify(article.userName)) {
             return res.status(404).json({
                 status: 'Failed',
                 message: 'You can not update this article because You are not the author of this article'
@@ -83,48 +69,16 @@ const updateArticle = async (req, res, next) => {
     }
     catch (err) {
         res.status(404).json({
-            status: 'Failed',
+            status: 'Error',
             message: err.message
         })
     }
 }
 
-const deleteArticle = async (req, res, next) => {
-    try {
-        const article = await Article.findById(req.params.id)
-
-        if (!article) {
-            return res.status(404).json({
-                status: 'Failed',
-                message: 'article not found'
-            })
-        }
-
-        if (JSON.stringify(req.user._id) !== JSON.stringify(article.author)) {
-            return res.status(404).json({
-                status: 'Failed',
-                message: 'You can not delete this article because You are not the author of this article'
-            })
-        }
-
-        const deletedData = await Article.findByIdAndDelete(req.params.id)
-
-        res.status(200).json({
-            status: 'Success',
-            deletedData
-        })
-    }
-    catch (err) {
-        res.status(404).json({
-            status: 'Failed',
-            message: err.message
-        })
-    }
-}
-
+// ---------------------------------------------------
 const getArticlesByTopic = async (req, res, next) => {
     try {
-        const articles = await Article.find({ topicId: req.body.topicId })
+        const articles = await Article.find({ topicName: req.params.topicName })
 
         res.status(200).json({
             status: 'Success',
@@ -132,7 +86,45 @@ const getArticlesByTopic = async (req, res, next) => {
         })
     } catch (err) {
         res.status(404).json({
-            status: 'Failed',
+            status: 'Error',
+            message: err.message
+        })
+    }
+}
+
+// ---------------------------------------------------
+const getArticlesByUser = async (req, res, next) => {
+    try {
+        const articles = await Article.find({ userName: req.params.userName })
+
+        res.status(200).json({
+            status: 'Success',
+            articles
+        })
+    } catch (err) {
+        res.status(404).json({
+            status: 'Error',
+            message: err.message
+        })
+    }
+}
+
+// ------------------------------------------------------
+const getArticlesByUserAndTopic = async (req, res) => {
+    try {
+        const comments = await Article.find({
+            userName: req.body.userName,
+            topicName: req.body.topicName
+        })
+
+        res.status(200).json({
+            status: 'Success',
+            comments
+        })
+    }
+    catch (err) {
+        res.status(404).json({
+            status: 'Error',
             message: err.message
         })
     }
@@ -141,8 +133,8 @@ const getArticlesByTopic = async (req, res, next) => {
 module.exports = {
     createArticle,
     getAllArticles,
-    getArticleById,
     updateArticle,
-    deleteArticle,
-    getArticlesByTopic
+    getArticlesByTopic,
+    getArticlesByUser,
+    getArticlesByUserAndTopic
 }

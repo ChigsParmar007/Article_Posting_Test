@@ -1,15 +1,15 @@
 const express = require('express')
 const router = express.Router()
 const { protect } = require('../Controllers/authController')
-const { getAllTopics, createTopic, getTopicById, updateTopic, deleteTopic } = require('../Controllers/topicController')
+const { getAllTopics, createTopic, getTopicByTopicName, updateTopic } = require('../Controllers/topicController')
 
 router
     .route('/')
     .get(getAllTopics)
 
 router
-    .route('/:id')
-    .get(getTopicById)
+    .route('/:topicName')
+    .get(getTopicByTopicName)
 
 // Use a middleware to identify the user to perform below actions
 router.use(protect)
@@ -21,6 +21,5 @@ router
 router
     .route('/:id')
     .patch(updateTopic)
-    .delete(deleteTopic)
 
 module.exports = router

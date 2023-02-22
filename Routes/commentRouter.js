@@ -1,15 +1,26 @@
 const express = require('express')
 const router = express.Router()
 const { protect } = require('../Controllers/authController')
-const { getAllComments, createComment, getCommentById, updateComment, deleteComment } = require('../Controllers/commentController')
+const {
+    createComment,
+    updateComment,
+    deleteComment,
+    getAllCommentsOfParticularUser,
+    getAllCommentsOfParticularArticle,
+    getCommentsByUserAndArticle
+} = require('../Controllers/commentController')
 
 router
-    .route('/')
-    .get(getAllComments)
+    .route('/getAllCommentsOfParticularUser/:userName')
+    .get(getAllCommentsOfParticularUser)
 
 router
-    .route('/:id')
-    .get(getCommentById)
+    .route('/getAllCommentsOfParticularArticle/:articleId')
+    .get(getAllCommentsOfParticularArticle)
+
+router
+    .route('/getCommentsByUserAndArticle')
+    .post(getCommentsByUserAndArticle)
 
 // Use a middleware to identify the user to perform below actions
 router.use(protect)

@@ -8,12 +8,40 @@ APIS- --> register user
       --> get all topics
       --> create article
       --> edit article
-      --> delete article
+       delete article
       --> get all articles
       --> get articles by topic
       get most recent articles 
       get articles of following users
       --> comment on post
+
+
+signup
+signin
+
+create topic
+get all topics
+get topic by name
+
+update topic
+// delete topic
+
+create artical
+update artical 
+get all articals
+get all articals created on perticular topic
+get all articals created by perticular user
+get all articals created by perticular user and topic
+// delete artical
+
+
+create comment
+update comment
+delete comment
+get all comment created by perticular user
+get all comment created on perticular artical
+get all comment created by perticular user and article
+
 
 
 
@@ -25,6 +53,7 @@ userModel.js
 topicModel.js
 articleModel.js
 commentModel.js
+followersModel.js
 
 
 Routers
@@ -32,6 +61,7 @@ userRouter.js
 topicRouter.js
 articleRouter.js
 commentRouter.js
+followersRoute.js
 
 
 Controllers
@@ -40,6 +70,7 @@ authController.js
 topicController.js
 articleController.js
 commentController.js
+followersController.js
 
 
 Utils
@@ -72,9 +103,13 @@ author: ObjectId,
 createdAt: Date,
 published: boolean
 
-=> comment
+=> comment Schema
 comment: string
 rating: number
 atricleId: ObjectId
 userId: ObjectId
 commentedAt: Date
+
+=> followes Schema
+user: userName
+follow: userName

@@ -6,10 +6,9 @@ const schema = new mongoose.Schema({
         required: [true, 'Topic name is required.'],
         unique: true
     },
-    author: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'user',
-        require: [true, 'Author name is required']
+    userName: {
+        type: String,
+        require: [true, 'User Name is required']
     },
     createdAt: {
         type: Date,
