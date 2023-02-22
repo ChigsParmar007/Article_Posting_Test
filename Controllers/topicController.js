@@ -63,7 +63,7 @@ const deleteTopic = async (req, res, next) => {
     try {
         const topic = await Topic.findById(req.params.id)
         console.log(req.user._id)
-        console.log(topic)
+        console.log(topic.author)
         if (req.user._id !== topic.author) {
             return res.status(404).json({
                 status: 'Failed',

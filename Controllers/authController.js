@@ -31,7 +31,7 @@ const protect = async (req, res, next) => {
             message: 'user belonging to this token does no longer exist.'
         })
     }
-    
+
     // 4) Check if user changed password after the token was issued
     if (currentUser.changedPasswordAfter(decoded.iat)) {
         return res.status(401).json({
