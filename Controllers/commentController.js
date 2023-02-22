@@ -1,14 +1,14 @@
-const Topic = require('../Models/topicModel')
+const Comment = require('../Models/commentModel')
 
-const createTopic = async (req, res, next) => {
+const createComment = async (req, res, next) => {
     try {
-        const topic = await Topic.create({
-            topicName: req.body.topicName,
+        const comment = await Comment.create({
+            comment: req.body.comment,
             author: req.user._id
         })
         res.status(201).json({
             status: 'Success',
-            topic
+            comment
         })
     }
     catch (err) {
@@ -19,13 +19,13 @@ const createTopic = async (req, res, next) => {
     }
 }
 
-const getAllTopics = async (req, res, next) => {
+const getAllComments = async (req, res, next) => {
     try {
-        const topics = await Topic.find()
+        const comments = await Comment.find()
 
         res.status(200).json({
             status: 'Success',
-            topics
+            comments
         })
     }
     catch (err) {
@@ -36,13 +36,13 @@ const getAllTopics = async (req, res, next) => {
     }
 }
 
-const getTopicById = async (req, res, next) => {
+const getCommentById = async (req, res, next) => {
     try {
-        const topic = await Topic.findById(req.params.id)
+        const comment = await Comment.findById(req.params.id)
 
         res.status(200).json({
             status: 'Success',
-            topic
+            comment
         })
     }
     catch (err) {
@@ -53,26 +53,26 @@ const getTopicById = async (req, res, next) => {
     }
 }
 
-const updateTopic = async (req, res, next) => {
+const updateComment = async (req, res, next) => {
     try {
-        const topic = await Topic.findById(req.params.id)
+        const comment = await Comment.findById(req.params.id)
 
-        if (!topic) {
+        if (!comment) {
             return res.status(404).json({
                 status: 'Failed',
-                message: 'Topic not found'
+                message: 'comment not found'
             })
         }
 
-        if (JSON.stringify(req.user._id) !== JSON.stringify(topic.author)) {
+        if (JSON.stringify(req.user._id) !== JSON.stringify(comment.authorId)) {
             return res.status(404).json({
                 status: 'Failed',
-                message: 'You can not update this topic because You are not the author of this topic'
+                message: 'You can not update this comment because You are not the author of this comment'
             })
         }
 
-        const updatedData = await Topic.findByIdAndUpdate(req.params.id, {
-            topicName: req.body.topicName,
+        const updatedData = await Comment.findByIdAndUpdate(req.params.id, {
+            comment: req.body.comment,
         }, { new: true })
 
         res.status(200).json({
@@ -88,25 +88,25 @@ const updateTopic = async (req, res, next) => {
     }
 }
 
-const deleteTopic = async (req, res, next) => {
+const deleteComment = async (req, res, next) => {
     try {
-        const topic = await Topic.findById(req.params.id)
+        const comment = await Comment.findById(req.params.id)
 
-        if (!topic) {
+        if (!comment) {
             return res.status(404).json({
                 status: 'Failed',
-                message: 'Topic not found'
+                message: 'comment not found'
             })
         }
 
-        if (JSON.stringify(req.user._id) !== JSON.stringify(topic.author)) {
+        if (JSON.stringify(req.user._id) !== JSON.stringify(comment.authorId)) {
             return res.status(404).json({
                 status: 'Failed',
-                message: 'You can not delete this topic because You are not the author of this topic'
+                message: 'You can not delete this comment because You are not the author of this comment'
             })
         }
 
-        const deletedData = await Topic.findByIdAndDelete(req.params.id)
+        const deletedData = await Comment.findByIdAndDelete(req.params.id)
 
         res.status(200).json({
             status: 'Success',
@@ -122,9 +122,9 @@ const deleteTopic = async (req, res, next) => {
 }
 
 module.exports = {
-    createTopic,
-    getAllTopics,
-    getTopicById,
-    updateTopic,
-    deleteTopic
+    createComment,
+    getAllComments,
+    getCommentById,
+    updateComment,
+    deleteComment
 }

@@ -10,8 +10,6 @@ const tokenGenerate = id => {
 const createSendToken = (user, statuscode, res) => {
     const token = tokenGenerate(user._id)
     user.password = undefined
-    user.passwordConfirm = undefined
-
 
     res.status(statuscode).json({
         status: 'Success',
@@ -41,7 +39,12 @@ const signUp = async (req, res, next) => {
 
     try {
         const user = await User.create(req.body)
-        createSendToken(user, 201, res)
+        user.password = undefined
+
+        res.status(201).json({
+            status: 'Success',
+            user
+        })
     }
     catch (err) {
         return res.status(400).json({
