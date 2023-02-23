@@ -1,10 +1,45 @@
 const Followers = require('../Models/followersModel')
+const User = require('../Models/userModel')
 
 const createFollow = async (req, res) => {
     try {
-        const follow = await Followers.create({
+        if (req.user._id === req.body.userId) {
+            return res.status(400).json({
+                status: 'Failed',
+                message: 'You cannot follow yourself'
+            })
+        }
+
+        const userexists = await User.findOne({
+            _id: req.body.userId,
+            userName: req.body.user
+        })
+
+        if (!userexists) {
+            return res.status(200).json({
+                status: 'Failed',
+                message: `${req.body.user} is not exists`
+            })
+        }
+
+        const data = await Followers.findOne({
+            userId: req.body.userId,
             user: req.body.user,
-            follow: req.user.userName
+            followId: req.user._id
+        })
+
+        if (data) {
+            return res.status(200).json({
+                status: 'Failed',
+                message: `You are already following ${req.body.user}`
+            })
+        }
+
+        const follow = await Followers.create({
+            userId: req.body.userId,
+            user: req.body.user,
+            follow: req.user.userName,
+            followId: req.user._id
         })
 
         res.status(200).json({
@@ -22,12 +57,14 @@ const createFollow = async (req, res) => {
 
 const getAllFollowers = async (req, res) => {
     try {
+
         const followers = await Followers.find({
             user: req.user.userName
         })
 
         res.status(200).json({
             status: 'Success',
+            length: followers.length,
             followers
         })
     }
@@ -41,13 +78,14 @@ const getAllFollowers = async (req, res) => {
 
 const getAllFollowing = async (req, res) => {
     try {
-        const followers = await Followers.find({
+        const following = await Followers.find({
             follow: req.user.userName
         })
 
         res.status(200).json({
             status: 'Success',
-            followers
+            length: following.length,
+            following
         })
     }
     catch (err) {
@@ -60,16 +98,15 @@ const getAllFollowing = async (req, res) => {
 
 const unfollow = async (req, res) => {
     try {
-        const data = await Followers.find({
-            user: req.params.user,
-            follow: req.user.userName
+        const data = await Followers.findOne({
+            userId: req.params.userId,
+            followId: req.user._id
         })
-        console.log(data)
 
         if (!data) {
             return res.status(404).json({
                 status: 'Failed',
-                message: `You are not follow ${req.params.user}`
+                message: `You not follow ${req.params.userId}`
             })
         }
 

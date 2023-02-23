@@ -32,6 +32,96 @@ user:
     "passwordConfirm": "{{password}}"
 }
 
+{
+    "firstName": "Ajay",
+    "lastName": "Solanki",
+    "userName": "AjayS",
+    "email": "ajay@gmail.com",
+    "phone": "8458458596",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Shruti",
+    "lastName": "Butani",
+    "userName": "ShrutiB",
+    "email": "shruti@gmail.com",
+    "phone": "9658458457",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Dhaval",
+    "lastName": "Vala",
+    "userName": "DhavalV",
+    "email": "dhaval@gmail.com",
+    "phone": "8254965745",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Devraj",
+    "lastName": "Galchar",
+    "userName": "DevrajG",
+    "email": "devraj@gmail.com",
+    "phone": "8128282350",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Keval",
+    "lastName": "Mojidra",
+    "userName": "KevalM",
+    "email": "keval@gmail.com",
+    "phone": "7490980200",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Vattsal",
+    "lastName": "Dumaniya",
+    "userName": "VattsalD",
+    "email": "vattsal@gmail.com",
+    "phone": "8759856485",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Mini",
+    "lastName": "Shah",
+    "userName": "MiniS",
+    "email": "mini@gmail.com",
+    "phone": "7586304125",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Priya",
+    "lastName": "Kejrival",
+    "userName": "PriyaK",
+    "email": "priya@gmail.com",
+    "phone": "6385985745",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
+{
+    "firstName": "Jenisha",
+    "lastName": "Patel",
+    "userName": "JenishaP",
+    "email": "jenisha@gmail.com",
+    "phone": "8956425485",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
+
 ==================================================
 topic:
 ===>
@@ -57,6 +147,22 @@ topic:
 
 {
     "topicName": "Anime"
+}
+
+{
+    "topicName": "Helth"
+}
+
+{
+    "topicName": "PUBG"
+}
+
+{
+    "topicName": "Free Fire"
+}
+
+{
+    "topicName": "Front End"
 }
 
 ==================================================

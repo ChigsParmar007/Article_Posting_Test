@@ -6,7 +6,10 @@ const { getAllArticles,
     updateArticle,
     getArticlesByTopic,
     getArticlesByUser,
-    getArticlesByUserAndTopic
+    getArticlesByUserAndTopic,
+    deleteArticle,
+    getMostRecentArticles,
+    getArticlesOfFollowingUsers
 } = require('../Controllers/articleController')
 
 router
@@ -14,16 +17,20 @@ router
     .get(getAllArticles)
 
 router
-    .route('/getArticlesByTopic/:topicName')
+    .route('/getMostRecentArticles')
+    .get(getMostRecentArticles)
+
+router
+    .route('/getArticlesByTopic/:topicId')
     .get(getArticlesByTopic)
 
 router
-    .route('/getArticlesByUser/:userName')
+    .route('/getArticlesByUser/:userId')
     .get(getArticlesByUser)
 
 router
-    .route('/getArticlesByUserAndTopic')
-    .post(getArticlesByUserAndTopic)
+    .route('/getArticlesByUserAndTopic/:topicId')
+    .get(getArticlesByUserAndTopic)
 
 // Use a middleware to identify the user to perform below actions
 router.use(protect)
@@ -35,5 +42,10 @@ router
 router
     .route('/:id')
     .patch(updateArticle)
+    .delete(deleteArticle)
+
+router
+    .route('/getArticlesOfFollowingUsers')
+    .get(getArticlesOfFollowingUsers)
 
 module.exports = router

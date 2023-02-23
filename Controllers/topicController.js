@@ -1,11 +1,11 @@
 const Topic = require('../Models/topicModel')
 
-
 // --------------------------------------------
 const createTopic = async (req, res, next) => {
     try {
         const topic = await Topic.create({
             topicName: req.body.topicName,
+            userId: req.user._id,
             userName: req.user.userName
         })
 
@@ -29,6 +29,7 @@ const getAllTopics = async (req, res, next) => {
 
         res.status(200).json({
             status: 'Success',
+            length: topics.length,
             topics
         })
     }
@@ -52,7 +53,7 @@ const updateTopic = async (req, res, next) => {
             })
         }
 
-        if (JSON.stringify(req.user.userName) !== JSON.stringify(topic.userName)) {
+        if (JSON.stringify(req.user._id) !== JSON.stringify(topic.userId)) {
             return res.status(404).json({
                 status: 'Failed',
                 message: 'You can not update this topic because You are not the author of this topic'
@@ -78,7 +79,7 @@ const updateTopic = async (req, res, next) => {
 
 const getTopicByTopicName = async (req, res, next) => {
     try {
-        const topic = await Topic.find({ topicName: req.params.topicName })
+        const topic = await Topic.findOne({ topicName: req.params.topicName })
 
         res.status(200).json({
             status: 'Success',

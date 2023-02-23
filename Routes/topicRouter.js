@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const { protect } = require('../Controllers/authController')
-const { getAllTopics, createTopic, getTopicByTopicName, updateTopic } = require('../Controllers/topicController')
+const { getAllTopics,
+    createTopic,
+    getTopicByTopicName,
+    updateTopic
+} = require('../Controllers/topicController')
 
 router
     .route('/')
@@ -11,7 +15,7 @@ router
     .route('/:topicName')
     .get(getTopicByTopicName)
 
-// Use a middleware to identify the user to perform below actions
+
 router.use(protect)
 
 router

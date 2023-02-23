@@ -6,6 +6,11 @@ const schema = new mongoose.Schema({
         required: [true, 'Topic name is required.'],
         unique: true
     },
+    userId: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'user',
+        required: [true, 'User id is required.']
+    },
     userName: {
         type: String,
         require: [true, 'User Name is required']

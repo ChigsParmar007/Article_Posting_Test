@@ -61,7 +61,7 @@ const signIn = async (req, res, next) => {
     if (!userName || !password) {
         return res.status(401).json({
             status: 'Failed',
-            message: 'provide an Email and Password both'
+            message: 'Provide an Username and Password both'
         })
     }
 

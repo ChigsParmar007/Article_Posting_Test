@@ -1,27 +1,30 @@
 const mongoose = require('mongoose')
 const bcryptjs = require('bcryptjs')
+const validator = require('validator')
 
 const schema = new mongoose.Schema({
     firstName: {
         type: String,
-        required: [true, 'First Name is Required']
+        required: [true, 'First Name is Required.']
     },
     lastName: {
         type: String,
-        required: [true, 'Last Name is Required']
+        required: [true, 'Last Name is Required.']
     },
     userName: {
         type: String,
-        required: [true, 'UserName is Required'],
+        required: [true, 'UserName is Required.'],
         unique: true
     },
     email: {
         type: String,
-        required: [true, 'Email is Required']
+        required: [true, 'Email is Required.'],
+        lowercase: true,
+        validate: [validator.isEmail, 'Provide a valid email']
     },
     phone: {
         type: String,
-        required: [true, 'Phone is Required'],
+        required: [true, 'Phone is Required.'],
         unique: true
     },
     password: {
@@ -55,7 +58,7 @@ const schema = new mongoose.Schema({
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date,
+    passwordResetExpires: Date
 })
 
 schema.pre('save', async function (next) {
@@ -89,8 +92,7 @@ schema.methods.changedPasswordAfter = function (JWTTimestamp) {
 
         return JWTTimestamp < changedTimestamp
     }
-
-    // False means NOT changed
+    
     return false
 }
 

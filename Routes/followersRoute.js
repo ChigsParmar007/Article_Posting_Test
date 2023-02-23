@@ -18,7 +18,7 @@ router
     .get(getAllFollowing)
 
 router
-    .route('/unfollow/:user')
+    .route('/unfollow/:userId')
     .delete(unfollow)
 
 module.exports = router
