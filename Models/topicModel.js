@@ -11,10 +11,6 @@ const schema = new mongoose.Schema({
         ref: 'user',
         required: [true, 'User id is required.']
     },
-    userName: {
-        type: String,
-        require: [true, 'User Name is required']
-    },
     createdAt: {
         type: Date,
         default: Date.now()

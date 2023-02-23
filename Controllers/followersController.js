@@ -1,30 +1,27 @@
+const mongoose = require('mongoose')
 const Followers = require('../Models/followersModel')
 const User = require('../Models/userModel')
 
 const createFollow = async (req, res) => {
     try {
-        if (req.user._id === req.body.userId) {
+        if (JSON.stringify(req.user._id) === JSON.stringify(req.body.userId)) {
             return res.status(400).json({
                 status: 'Failed',
                 message: 'You cannot follow yourself'
             })
         }
 
-        const userexists = await User.findOne({
-            _id: req.body.userId,
-            userName: req.body.user
-        })
+        const userexists = await User.findById(req.body.userId)
 
         if (!userexists) {
             return res.status(200).json({
                 status: 'Failed',
-                message: `${req.body.user} is not exists`
+                message: `${req.body.userId} does not exists`
             })
         }
 
         const data = await Followers.findOne({
             userId: req.body.userId,
-            user: req.body.user,
             followId: req.user._id
         })
 
@@ -37,8 +34,6 @@ const createFollow = async (req, res) => {
 
         const follow = await Followers.create({
             userId: req.body.userId,
-            user: req.body.user,
-            follow: req.user.userName,
             followId: req.user._id
         })
 
@@ -59,7 +54,7 @@ const getAllFollowers = async (req, res) => {
     try {
 
         const followers = await Followers.find({
-            user: req.user.userName
+            userId: req.user._id
         })
 
         res.status(200).json({
@@ -79,7 +74,7 @@ const getAllFollowers = async (req, res) => {
 const getAllFollowing = async (req, res) => {
     try {
         const following = await Followers.find({
-            follow: req.user.userName
+            followId: req.user._id
         })
 
         res.status(200).json({

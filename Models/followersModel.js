@@ -6,14 +6,6 @@ const schema = new mongoose.Schema({
         ref: 'user',
         required: [true, 'User Id is required.']
     },
-    user: {
-        type: String,
-        required: [true, 'User Name is required.']
-    },
-    follow: {
-        type: String,
-        required: [true, 'Currently logged in User Name is required.']
-    },
     followId: {
         type: mongoose.Schema.ObjectId,
         ref: 'user',

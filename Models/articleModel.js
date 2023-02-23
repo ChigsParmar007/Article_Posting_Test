@@ -6,10 +6,6 @@ const schema = new mongoose.Schema({
         ref: 'topic',
         required: [true, 'Topic Id is required']
     },
-    topicName: {
-        type: String,
-        required: [true, 'Topic name is required']
-    },
     content: {
         type: String,
         required: [true, 'Content is required']
@@ -18,10 +14,6 @@ const schema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'user',
         required: [true, 'User Id is required']
-    },
-    userName: {
-        type: String,
-        required: [true, 'User Name is required']
     },
     published: {
         type: Boolean,

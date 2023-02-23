@@ -169,27 +169,27 @@ topic:
 article:
 ===>
 {
-    "topicName": "Music",
+    "topicId": "63f79b2291a5e6e0d43e1cff",
     "content": "Good Music is hard to find"
 }
 
 {
-    "topicName": "Cricket",
+    "topicId": "63f79b2b91a5e6e0d43e1d02",
     "content": "India vs Pakistan match is very interesting."
 }
 
 {
-    "topicName": "Politics",
+    "topicId": "63f79b0e91a5e6e0d43e1cfb",
     "content": "Crupption is everywhere"
 }
 
 {
-    "topicName": "Entertainment",
+    "topicId": "63f79b0991a5e6e0d43e1cf8",
     "content": "Ranvir and Alia Just married"
 }
 
 {
-    "topicName": "Cartoon",
+    "topicId": "63f79b3f91a5e6e0d43e1d06",
     "content": "When you sad watch some Cartoons"
 }
 

@@ -5,8 +5,7 @@ const createTopic = async (req, res, next) => {
     try {
         const topic = await Topic.create({
             topicName: req.body.topicName,
-            userId: req.user._id,
-            userName: req.user.userName
+            userId: req.user._id
         })
 
         res.status(201).json({
@@ -44,7 +43,7 @@ const getAllTopics = async (req, res, next) => {
 // --------------------------------------------
 const updateTopic = async (req, res, next) => {
     try {
-        const topic = await Topic.findById(req.params.id)
+        const topic = await Topic.findById(req.params.topicId)
 
         if (!topic) {
             return res.status(404).json({
@@ -60,7 +59,7 @@ const updateTopic = async (req, res, next) => {
             })
         }
 
-        const updatedData = await Topic.findByIdAndUpdate(req.params.id, {
+        const updatedData = await Topic.findByIdAndUpdate(req.params.topicId, {
             topicName: req.body.topicName,
         }, { new: true })
 

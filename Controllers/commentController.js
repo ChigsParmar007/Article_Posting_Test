@@ -7,7 +7,7 @@ const createComment = async (req, res, next) => {
             comment: req.body.comment,
             rating: req.body.rating,
             articleId: req.body.articleId,
-            userName: req.user.userName
+            userId: req.user._id
         })
         res.status(201).json({
             status: 'Success',
@@ -41,7 +41,10 @@ const updateComment = async (req, res, next) => {
             })
         }
 
-        const updatedData = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        const updatedData = await Comment.findByIdAndUpdate(req.params.id, {
+            comment: req.body.comment,
+            rating: req.body.rating
+        }, { new: true })
 
         res.status(200).json({
             status: 'Success',
@@ -59,10 +62,11 @@ const updateComment = async (req, res, next) => {
 // ---------------------------------------------------------------
 const getAllCommentsOfParticularUser = async (req, res, next) => {
     try {
-        const comments = await Comment.find({ userName: req.params.userName })
+        const comments = await Comment.find({ userId: req.params.userId })
 
         res.status(200).json({
             status: 'Success',
+            length: comments.length,
             comments
         })
     }
@@ -81,6 +85,7 @@ const getAllCommentsOfParticularArticle = async (req, res, next) => {
 
         res.status(200).json({
             status: 'Success',
+            length: comments.length,
             comments
         })
     }
@@ -96,12 +101,13 @@ const getAllCommentsOfParticularArticle = async (req, res, next) => {
 const getCommentsByUserAndArticle = async (req, res, next) => {
     try {
         const comments = await Comment.find({
-            userName: req.body.userName,
+            userId: req.body.userId,
             articleId: req.body.articleId
         })
 
         res.status(200).json({
             status: 'Success',
+            length: comments.length,
             comments
         })
     }

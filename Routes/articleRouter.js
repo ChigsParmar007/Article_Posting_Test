@@ -17,7 +17,7 @@ router
     .get(getAllArticles)
 
 router
-    .route('/getMostRecentArticles')
+    .route('/getMostRecentArticles/:number')
     .get(getMostRecentArticles)
 
 router
@@ -29,8 +29,8 @@ router
     .get(getArticlesByUser)
 
 router
-    .route('/getArticlesByUserAndTopic/:topicId')
-    .get(getArticlesByUserAndTopic)
+    .route('/getArticlesByUserAndTopic')
+    .post(getArticlesByUserAndTopic)
 
 // Use a middleware to identify the user to perform below actions
 router.use(protect)

@@ -15,9 +15,10 @@ const schema = new mongoose.Schema({
         ref: 'article',
         required: [true, 'Article Id is required.']
     },
-    userName: {
-        type: String,
-        required: [true, 'User Name is required.']
+    userId: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'user',
+        required: [true, 'User id is required.']
     },
     createdAt: {
         type: Date,

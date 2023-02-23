@@ -23,7 +23,7 @@ router
     .post(createTopic)
 
 router
-    .route('/:id')
+    .route('/:topicId')
     .patch(updateTopic)
 
 module.exports = router

@@ -11,7 +11,7 @@ const {
 } = require('../Controllers/commentController')
 
 router
-    .route('/getAllCommentsOfParticularUser/:userName')
+    .route('/getAllCommentsOfParticularUser/:userId')
     .get(getAllCommentsOfParticularUser)
 
 router

@@ -6,24 +6,19 @@ const Topic = require('../Models/topicModel')
 // ----------------------------------------------
 const createArticle = async (req, res, next) => {
     try {
-        const validateTopic = await Topic.findOne({
-            _id: req.body.topicId,
-            topicName: req.body.topicName
-        })
+        const validateTopic = await Topic.findById(req.body.topicId)
 
         if (!validateTopic) {
             return res.status(404).json({
                 status: 'Failed',
-                message: `${req.body.topicName} is not exists`
+                message: `${req.body.topicId} does not exists`
             })
         }
 
         const article = new Article({
             topicId: req.body.topicId,
-            topicName: req.body.topicName,
             content: req.body.content,
-            userId: req.user._id,
-            userName: req.user.userName
+            userId: req.user._id
         })
         await article.save()
 
@@ -47,6 +42,7 @@ const getAllArticles = async (req, res, next) => {
 
         res.status(200).json({
             status: 'Success',
+            length: articles.length,
             articles
         })
     }
@@ -70,7 +66,7 @@ const updateArticle = async (req, res, next) => {
             })
         }
 
-        if (JSON.stringify(req.user.userName) !== JSON.stringify(article.userName)) {
+        if (JSON.stringify(req.user._id) !== JSON.stringify(article.userId)) {
             return res.status(404).json({
                 status: 'Failed',
                 message: 'You can not update this article because You are not the author of this article'
@@ -97,10 +93,11 @@ const updateArticle = async (req, res, next) => {
 // ---------------------------------------------------
 const getArticlesByTopic = async (req, res, next) => {
     try {
-        const articles = await Article.find({ topicName: req.params.topicName })
+        const articles = await Article.find({ topicId: req.params.topicId })
 
         res.status(200).json({
             status: 'Success',
+            length: articles.length,
             articles
         })
     } catch (err) {
@@ -114,10 +111,11 @@ const getArticlesByTopic = async (req, res, next) => {
 // ---------------------------------------------------
 const getArticlesByUser = async (req, res, next) => {
     try {
-        const articles = await Article.find({ userName: req.params.userName })
+        const articles = await Article.find({ userId: req.params.userId })
 
         res.status(200).json({
             status: 'Success',
+            length: articles.length,
             articles
         })
     } catch (err) {
@@ -131,14 +129,15 @@ const getArticlesByUser = async (req, res, next) => {
 // ------------------------------------------------------
 const getArticlesByUserAndTopic = async (req, res) => {
     try {
-        const comments = await Article.find({
-            userName: req.body.userName,
-            topicName: req.params.topicName
+        const articles = await Article.find({
+            topicId: req.body.topicId,
+            userId: req.body.userId
         })
 
         res.status(200).json({
             status: 'Success',
-            comments
+            length: articles.length,
+            articles
         })
     }
     catch (err) {
@@ -152,6 +151,7 @@ const getArticlesByUserAndTopic = async (req, res) => {
 const deleteArticle = async (req, res) => {
     try {
         const getArticle = await Article.findById(req.params.id)
+
         if (!getArticle) {
             return res.status(404).json({
                 status: 'Failed',
@@ -189,7 +189,7 @@ const getMostRecentArticles = async (req, res) => {
                 $sort: { createdAt: 1 }
             },
             {
-                $limit: 5
+                $limit: Number(req.params.number)
             }
         ])
 
@@ -209,23 +209,24 @@ const getMostRecentArticles = async (req, res) => {
 
 const getArticlesOfFollowingUsers = async (req, res) => {
     try {
-        const currentUser = req.user
-
         const articles = await Followers.aggregate([
             {
                 '$lookup': {
                     'from': 'articles',
-                    'localField': 'user',
-                    'foreignField': 'userName',
+                    'localField': 'userId',
+                    'foreignField': 'userId',
                     'as': 'articles'
                 }
-            }, {
+            },
+            {
                 '$unwind': '$articles'
-            }, {
+            },
+            {
                 '$match': {
-                    'follow': currentUser.userName
+                    'followId': req.user._id
                 }
-            }, {
+            },
+            {
                 '$project': {
                     '_id': 0,
                     'articles': 1
@@ -235,6 +236,7 @@ const getArticlesOfFollowingUsers = async (req, res) => {
 
         res.status(200).json({
             status: 'Status',
+            length: articles.length,
             articles
         })
     }
