@@ -21,7 +21,7 @@ const createSendToken = (user, statuscode, res) => {
 // Register User
 const signUp = async (req, res, next) => {
     const { email, password, passwordConfirm } = req.body
-
+    
     if (password !== passwordConfirm) {
         return res.status(400).json({
             status: 'Failed',

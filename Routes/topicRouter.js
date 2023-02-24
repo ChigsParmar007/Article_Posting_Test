@@ -1,6 +1,8 @@
 const express = require('express')
+const Topic = require('../Models/topicModel')
 const router = express.Router()
 const { protect } = require('../Controllers/authController')
+const { getAll } = require('../Controllers/hadleFactory')
 const { getAllTopics,
     createTopic,
     getTopicByTopicName,
@@ -9,7 +11,7 @@ const { getAllTopics,
 
 router
     .route('/')
-    .get(getAllTopics)
+    .get(getAll(Topic))
 
 router
     .route('/:topicName')

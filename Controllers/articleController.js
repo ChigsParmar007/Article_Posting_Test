@@ -37,21 +37,21 @@ const createArticle = async (req, res, next) => {
 
 // -----------------------------------------------
 const getAllArticles = async (req, res, next) => {
-    try {
-        const articles = await Article.find()
+//     try {
+//         const articles = await Article.find()
 
-        res.status(200).json({
-            status: 'Success',
-            length: articles.length,
-            articles
-        })
-    }
-    catch (err) {
-        res.status(404).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
+//         res.status(200).json({
+//             status: 'Success',
+//             length: articles.length,
+//             articles
+//         })
+//     }
+//     catch (err) {
+//         res.status(404).json({
+//             status: 'Error',
+//             message: err.message
+//         })
+//     }
 }
 
 // ----------------------------------------------
