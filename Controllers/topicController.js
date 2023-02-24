@@ -3,6 +3,14 @@ const Topic = require('../Models/topicModel')
 // --------------------------------------------
 const createTopic = async (req, res, next) => {
     try {
+        const existsTopic = await Topic.find({ topicName: req.body.topicName })
+        if (existsTopic) {
+            return res.status(404).json({
+                status: 'Failed',
+                message: `${req.body.topicName} already exists}`
+            })
+        }
+
         const topic = await Topic.create({
             topicName: req.body.topicName,
             userId: req.user._id
@@ -23,21 +31,21 @@ const createTopic = async (req, res, next) => {
 
 // ---------------------------------------------
 const getAllTopics = async (req, res, next) => {
-    try {
-        const topics = await Topic.find()
+    // try {
+    //     const topics = await Topic.find()
 
-        res.status(200).json({
-            status: 'Success',
-            length: topics.length,
-            topics
-        })
-    }
-    catch (err) {
-        res.status(404).json({
-            status: 'Failed',
-            message: err.message
-        })
-    }
+    //     res.status(200).json({
+    //         status: 'Success',
+    //         length: topics.length,
+    //         topics
+    //     })
+    // }
+    // catch (err) {
+    //     res.status(404).json({
+    //         status: 'Failed',
+    //         message: err.message
+    //     })
+    // }
 }
 
 // --------------------------------------------

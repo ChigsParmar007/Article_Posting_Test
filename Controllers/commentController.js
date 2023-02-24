@@ -34,7 +34,7 @@ const updateComment = async (req, res, next) => {
             })
         }
 
-        if (JSON.stringify(req.user.userName) !== JSON.stringify(comment.userName)) {
+        if (JSON.stringify(req.user._id) !== JSON.stringify(comment.userId)) {
             return res.status(404).json({
                 status: 'Failed',
                 message: 'You can not update this comment because You are not the author of this comment'
@@ -60,9 +60,9 @@ const updateComment = async (req, res, next) => {
 }
 
 // ---------------------------------------------------------------
-const getAllCommentsOfParticularUser = async (req, res, next) => {
+const getAllCommentsOfLoggedinUser = async (req, res, next) => {
     try {
-        const comments = await Comment.find({ userId: req.params.userId })
+        const comments = await Comment.find({ userId: req.body._id })
 
         res.status(200).json({
             status: 'Success',
@@ -131,7 +131,7 @@ const deleteComment = async (req, res, next) => {
             })
         }
 
-        if (JSON.stringify(req.user.userName) !== JSON.stringify(comment.userName)) {
+        if (JSON.stringify(req.user._id) !== JSON.stringify(comment.userId)) {
             return res.status(404).json({
                 status: 'Failed',
                 message: 'You can not delete this comment because You are not the author of this comment'
@@ -155,7 +155,7 @@ const deleteComment = async (req, res, next) => {
 
 module.exports = {
     createComment,
-    getAllCommentsOfParticularUser,
+    getAllCommentsOfLoggedinUser,
     getAllCommentsOfParticularArticle,
     getCommentsByUserAndArticle,
     updateComment,

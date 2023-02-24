@@ -20,8 +20,8 @@ const createSendToken = (user, statuscode, res) => {
 
 // Register User
 const signUp = async (req, res, next) => {
-    const { email, password, passwordConfirm } = req.body
-    
+    const { email, password, passwordConfirm, phone } = req.body
+
     if (password !== passwordConfirm) {
         return res.status(400).json({
             status: 'Failed',
@@ -29,7 +29,16 @@ const signUp = async (req, res, next) => {
         })
     }
 
+    const phoneRegex = /^[9]+[0-9]{9}$/
+    if (!phoneRegex.test(phone)) {
+        return res.status(400).json({
+            status: 'Failed',
+            message: 'Enter valid Phone'
+        })
+    }
+
     const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/
+    // const emailRegex = /^[a-zA-Z0-9._]+@+[a-zA-Z]+\\.[a-z]{2,3}]/
     if (!emailRegex.test(email)) {
         return res.status(400).json({
             status: 'Failed',
@@ -65,16 +74,24 @@ const signIn = async (req, res, next) => {
         })
     }
 
-    const user = await User.findOne({ userName }).select('+password')
+    try {
+        const user = await User.findOne({ userName }).select('+password')
 
-    if (!user || !(await user.correctPassword(password, user.password))) {
+        if (!user || !(await user.correctPassword(password, user.password))) {
+            return res.status(400).json({
+                status: 'Failed',
+                message: 'Check your login credentials'
+            })
+        }
+
+        createSendToken(user, 201, res)
+    }
+    catch (err) {
         return res.status(400).json({
             status: 'Failed',
-            message: 'Check your login credentials'
+            message: err.message
         })
     }
-
-    createSendToken(user, 201, res)
 }
 
 module.exports = {

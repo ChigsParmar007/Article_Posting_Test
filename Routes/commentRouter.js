@@ -5,14 +5,10 @@ const {
     createComment,
     updateComment,
     deleteComment,
-    getAllCommentsOfParticularUser,
+    getAllCommentsOfLoggedinUser,
     getAllCommentsOfParticularArticle,
     getCommentsByUserAndArticle
 } = require('../Controllers/commentController')
-
-router
-    .route('/getAllCommentsOfParticularUser/:userId')
-    .get(getAllCommentsOfParticularUser)
 
 router
     .route('/getAllCommentsOfParticularArticle/:articleId')
@@ -28,6 +24,10 @@ router.use(protect)
 router
     .route('/')
     .post(createComment)
+
+router
+    .route('/getAllCommentsOfLoggedinUser')
+    .get(getAllCommentsOfLoggedinUser)
 
 router
     .route('/:id')

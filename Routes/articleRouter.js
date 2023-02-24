@@ -12,7 +12,8 @@ const {
     getArticlesByUserAndTopic,
     deleteArticle,
     getMostRecentArticles,
-    getArticlesOfFollowingUsers
+    getArticlesOfFollowingUsers,
+    getCurrentlyLoggedinUserArticle
 } = require('../Controllers/articleController')
 
 router
@@ -41,6 +42,10 @@ router.use(protect)
 router
     .route('/')
     .post(createArticle)
+
+router
+    .route('/getCurrentlyLoggedinUserArticle')
+    .get(getCurrentlyLoggedinUserArticle)
 
 router
     .route('/:id')

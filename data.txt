@@ -1,6 +1,6 @@
-data: 
+data:
 
-user: 
+user:
 ===>
 {
     "firstName": "Khushi",
@@ -197,27 +197,27 @@ article:
 comment:
 ===>
 {
-    "comment": "Absolutly Right",
+    "comment": "Absolutly Right.",
     "rating": 4,
-    "articleId": "63f61abbbc956fc8d0a8c5f1"
+    "articleId": "63f7b788407bfe9ec21b96ee"
 }
 
 {
     "comment": "Seriosly",
     "rating": 1,
-    "articleId": "63f61b92bc956fc8d0a8c5fb"
+    "articleId": "63f7b870407bfe9ec21b9700"
 }
 
 {
     "comment": "Very much fun",
     "rating": 5,
-    "articleId": "63f61c1abc956fc8d0a8c600"
+    "articleId": "63f7b89a407bfe9ec21b9705"
 }
 
 {
     "comment": "yaah right",
     "rating": 4,
-    "articleId": "63f61abbbc956fc8d0a8c5f1"
+    "articleId": "63f7b808407bfe9ec21b96fa"
 }
 
 {

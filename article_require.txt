@@ -12,8 +12,8 @@ APIS- --> register user
       --> get all articles
       --> get articles by topic
       --> get most recent articles 
-      get articles of following users
-      --> comment on post
+      --> get articles of following users
+      --> comment on artical
 
 
 signup
@@ -24,15 +24,16 @@ get all topics
 get topic by name
 update topic
 
-// delete topic
-
 create artical
-update artical 
 get all articals
+update artical 
 get all articals created on perticular topic
 get all articals created by perticular user
 get all articals created by perticular user and topic
 delete artical
+get most recent articles 
+get articles of following users
+get Currently Loggedin User Article
 
 
 create comment
@@ -42,6 +43,10 @@ get all comment created by perticular user
 get all comment created on perticular artical
 get all comment created by perticular user and article
 
+follow
+unfollow
+get all followers
+get all followings
 
 
 
@@ -71,20 +76,4 @@ topicController.js
 articleController.js
 commentController.js
 followersController.js
-
-
-
-Success
-
-SignUp
-SignIn
-
-Create Topic
-Get All Topics
-Update Topic
-
-Follow
-Unfollow
-get all Followers
-get all Following
-
+handleFactory.js

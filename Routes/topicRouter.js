@@ -3,7 +3,8 @@ const Topic = require('../Models/topicModel')
 const router = express.Router()
 const { protect } = require('../Controllers/authController')
 const { getAll } = require('../Controllers/hadleFactory')
-const { getAllTopics,
+const { 
+    // getAllTopics,
     createTopic,
     getTopicByTopicName,
     updateTopic

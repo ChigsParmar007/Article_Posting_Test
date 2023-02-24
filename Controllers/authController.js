@@ -22,6 +22,7 @@ const protect = async (req, res, next) => {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 
     const currentUser = await User.findById(decoded.id)
+
     if (!currentUser) {
         return res.status(401).json({
             status: 'Failed',
@@ -29,16 +30,19 @@ const protect = async (req, res, next) => {
         })
     }
 
-    if (currentUser.changedPasswordAfter(decoded.iat)) {
-        return res.status(401).json({
-            status: 'Failed',
-            message: 'User recently changed password! log in again.'
-        })
-    }
+    // if (currentUser.changedPasswordAfter(decoded.iat)) {
+    //     return res.status(401).json({
+    //         status: 'Failed',
+    //         message: 'User recently changed password! log in again.'
+    //     })
+    // }
 
     req.user = currentUser
-    res.locals.user = currentUser
     next()
+}
+
+const globleErrorHandler = async (req, res, next) => {
+
 }
 
 module.exports = {
