@@ -1,7 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const { protect } = require('../Controllers/authController')
-const { createFollow, getAllFollowers, getAllFollowing, unfollow } = require('../Controllers/followersController')
+const {
+    createFollow,
+    getAllFollowers,
+    getAllFollowing,
+    unfollow
+} = require('../Controllers/followersController')
 
 router.use(protect)
 

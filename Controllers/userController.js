@@ -18,8 +18,8 @@ const createSendToken = (user, statuscode, res) => {
     })
 }
 
-// Register User
-const signUp = async (req, res, next) => {
+// ==================== REGISTER USER ====================
+const signUp = async (req, res) => {
     const { email, password, passwordConfirm, phone } = req.body
 
     if (password !== passwordConfirm) {
@@ -63,8 +63,8 @@ const signUp = async (req, res, next) => {
     }
 }
 
-// Login User
-const signIn = async (req, res, next) => {
+// ==================== LOGIN USER ====================
+const signIn = async (req, res) => {
     const { userName, password } = req.body
 
     if (!userName || !password) {
@@ -84,7 +84,7 @@ const signIn = async (req, res, next) => {
             })
         }
 
-        createSendToken(user, 201, res)
+        createSendToken(user, 200, res)
     }
     catch (err) {
         return res.status(400).json({

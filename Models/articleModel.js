@@ -23,7 +23,9 @@ const schema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     }
-})
+},
+    { versionKey: false }
+)
 
 const articleSchema = mongoose.model('Article', schema)
 

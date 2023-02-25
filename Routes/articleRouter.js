@@ -4,7 +4,6 @@ const router = express.Router()
 const { protect } = require('../Controllers/authController')
 const { getAll } = require('../Controllers/hadleFactory')
 const {
-    // getAllArticles,
     createArticle,
     updateArticle,
     getArticlesByTopic,
@@ -13,7 +12,7 @@ const {
     deleteArticle,
     getMostRecentArticles,
     getArticlesOfFollowingUsers,
-    getCurrentlyLoggedinUserArticle
+    getCurrentlyLoggedinUserArticles
 } = require('../Controllers/articleController')
 
 router
@@ -45,7 +44,7 @@ router
 
 router
     .route('/getCurrentlyLoggedinUserArticle')
-    .get(getCurrentlyLoggedinUserArticle)
+    .get(getCurrentlyLoggedinUserArticles)
 
 router
     .route('/:id')

@@ -3,8 +3,8 @@ const Comment = require('../Models/commentModel')
 const Followers = require('../Models/followersModel')
 const Topic = require('../Models/topicModel')
 
-// ----------------------------------------------
-const createArticle = async (req, res, next) => {
+// ==================== CREATE ARTICLE ====================
+const createArticle = async (req, res) => {
     try {
         const validateTopic = await Topic.findById(req.body.topicId)
 
@@ -35,27 +35,8 @@ const createArticle = async (req, res, next) => {
     }
 }
 
-// -----------------------------------------------
-const getAllArticles = async (req, res, next) => {
-    //     try {
-    //         const articles = await Article.find()
-
-    //         res.status(200).json({
-    //             status: 'Success',
-    //             length: articles.length,
-    //             articles
-    //         })
-    //     }
-    //     catch (err) {
-    //         res.status(404).json({
-    //             status: 'Error',
-    //             message: err.message
-    //         })
-    //     }
-}
-
-// ----------------------------------------------
-const updateArticle = async (req, res, next) => {
+// ==================== UPDATE ARTICLE ====================
+const updateArticle = async (req, res) => {
     try {
         const article = await Article.findById(req.params.id)
 
@@ -67,7 +48,7 @@ const updateArticle = async (req, res, next) => {
         }
 
         if (JSON.stringify(req.user._id) !== JSON.stringify(article.userId)) {
-            return res.status(404).json({
+            return res.status(401).json({
                 status: 'Failed',
                 message: 'You can not update this article because You are not the author of this article'
             })
@@ -83,15 +64,15 @@ const updateArticle = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
-// ----------------------------------------------------------
-const getCurrentlyLoggedinUserArticle = async (req, res) => {
+// ==================== GET CURRENTLY LOGGED IN USER ARTICLE ====================
+const getCurrentlyLoggedinUserArticles = async (req, res) => {
     try {
         const articles = await Article.find({ userId: req.user._id })
 
@@ -102,13 +83,14 @@ const getCurrentlyLoggedinUserArticle = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
-// ---------------------------------------------------
+
+// ==================== GET ARTICLES BY TOPIC ====================
 const getArticlesByTopic = async (req, res, next) => {
     try {
         const articles = await Article.find({ topicId: req.params.topicId })
@@ -119,15 +101,15 @@ const getArticlesByTopic = async (req, res, next) => {
             articles
         })
     } catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
-// ---------------------------------------------------
-const getArticlesByUser = async (req, res, next) => {
+// ==================== GET ARTICLES BY USER ====================
+const getArticlesByUser = async (req, res) => {
     try {
         const articles = await Article.find({ userId: req.params.userId })
 
@@ -137,14 +119,14 @@ const getArticlesByUser = async (req, res, next) => {
             articles
         })
     } catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
-// ------------------------------------------------------
+// ==================== GET ARTICLES BY USER AND TOPIC ====================
 const getArticlesByUserAndTopic = async (req, res) => {
     try {
         const articles = await Article.find({
@@ -159,13 +141,14 @@ const getArticlesByUserAndTopic = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
+// ==================== DELETE ARTICLE ====================
 const deleteArticle = async (req, res) => {
     try {
         const getArticle = await Article.findById(req.params.id)
@@ -178,7 +161,7 @@ const deleteArticle = async (req, res) => {
         }
 
         if (JSON.stringify(req.user._id) !== JSON.stringify(article.userId)) {
-            return res.status(404).json({
+            return res.status(401).json({
                 status: 'Failed',
                 message: 'You can not update this article because You are not the author of this article'
             })
@@ -193,18 +176,19 @@ const deleteArticle = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
+// ==================== GET MOST RECENT ARTICLES ====================
 const getMostRecentArticles = async (req, res) => {
     try {
         const articles = await Article.aggregate([
             {
-                $sort: { createdAt: 1 }
+                $sort: { createdAt: -1 }
             },
             {
                 $limit: Number(req.params.number)
@@ -218,13 +202,14 @@ const getMostRecentArticles = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
+// ==================== GET ARTICLES OF FOLLOWING USER ====================
 const getArticlesOfFollowingUsers = async (req, res) => {
     try {
         const articles = await Followers.aggregate([
@@ -259,7 +244,7 @@ const getArticlesOfFollowingUsers = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
@@ -268,7 +253,6 @@ const getArticlesOfFollowingUsers = async (req, res) => {
 
 module.exports = {
     createArticle,
-    getAllArticles,
     updateArticle,
     getArticlesByTopic,
     getArticlesByUser,
@@ -276,5 +260,5 @@ module.exports = {
     deleteArticle,
     getMostRecentArticles,
     getArticlesOfFollowingUsers,
-    getCurrentlyLoggedinUserArticle
+    getCurrentlyLoggedinUserArticles
 }

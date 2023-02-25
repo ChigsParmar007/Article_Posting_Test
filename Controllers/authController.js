@@ -2,7 +2,7 @@ const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const User = require('../Models/userModel')
 
-// Protect Middleware for user validate user 
+// Protect Middleware for user validate user
 const protect = async (req, res, next) => {
     let token
     if (
@@ -30,19 +30,8 @@ const protect = async (req, res, next) => {
         })
     }
 
-    // if (currentUser.changedPasswordAfter(decoded.iat)) {
-    //     return res.status(401).json({
-    //         status: 'Failed',
-    //         message: 'User recently changed password! log in again.'
-    //     })
-    // }
-
     req.user = currentUser
     next()
-}
-
-const globleErrorHandler = async (req, res, next) => {
-
 }
 
 module.exports = {

@@ -1,13 +1,13 @@
 const Topic = require('../Models/topicModel')
 
-// --------------------------------------------
+// ==================== CREATE TOPIC ====================
 const createTopic = async (req, res, next) => {
     try {
         const existsTopic = await Topic.find({ topicName: req.body.topicName })
         if (existsTopic) {
-            return res.status(404).json({
+            return res.status(400).json({
                 status: 'Failed',
-                message: `${req.body.topicName} already exists}`
+                message: `${req.body.topicName} already exists`
             })
         }
 
@@ -29,26 +29,7 @@ const createTopic = async (req, res, next) => {
     }
 }
 
-// ---------------------------------------------
-const getAllTopics = async (req, res, next) => {
-    // try {
-    //     const topics = await Topic.find()
-
-    //     res.status(200).json({
-    //         status: 'Success',
-    //         length: topics.length,
-    //         topics
-    //     })
-    // }
-    // catch (err) {
-    //     res.status(404).json({
-    //         status: 'Failed',
-    //         message: err.message
-    //     })
-    // }
-}
-
-// --------------------------------------------
+// ==================== UPDATE TOPIC ====================
 const updateTopic = async (req, res, next) => {
     try {
         const topic = await Topic.findById(req.params.topicId)
@@ -61,7 +42,7 @@ const updateTopic = async (req, res, next) => {
         }
 
         if (JSON.stringify(req.user._id) !== JSON.stringify(topic.userId)) {
-            return res.status(404).json({
+            return res.status(401).json({
                 status: 'Failed',
                 message: 'You can not update this topic because You are not the author of this topic'
             })
@@ -77,13 +58,14 @@ const updateTopic = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Failed',
             message: err.message
         })
     }
 }
 
+// ==================== GET TOPIC BY TOPIC NAME ====================
 const getTopicByTopicName = async (req, res, next) => {
     try {
         const topic = await Topic.findOne({ topicName: req.params.topicName })
@@ -94,7 +76,7 @@ const getTopicByTopicName = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Failed',
             message: err.message
         })
@@ -103,7 +85,6 @@ const getTopicByTopicName = async (req, res, next) => {
 
 module.exports = {
     createTopic,
-    getAllTopics,
     getTopicByTopicName,
     updateTopic
 }

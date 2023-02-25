@@ -1,7 +1,7 @@
 const Comment = require('../Models/commentModel')
 
-// ----------------------------------------------
-const createComment = async (req, res, next) => {
+// ==================== CREATE COMMENT ====================
+const createComment = async (req, res) => {
     try {
         const comment = await Comment.create({
             comment: req.body.comment,
@@ -15,15 +15,15 @@ const createComment = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
-// ----------------------------------------------
-const updateComment = async (req, res, next) => {
+// ==================== UPDATE COMMENT ====================
+const updateComment = async (req, res) => {
     try {
         const comment = await Comment.findById(req.params.id)
 
@@ -35,7 +35,7 @@ const updateComment = async (req, res, next) => {
         }
 
         if (JSON.stringify(req.user._id) !== JSON.stringify(comment.userId)) {
-            return res.status(404).json({
+            return res.status(401).json({
                 status: 'Failed',
                 message: 'You can not update this comment because You are not the author of this comment'
             })
@@ -52,15 +52,15 @@ const updateComment = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
-// ---------------------------------------------------------------
-const getAllCommentsOfLoggedinUser = async (req, res, next) => {
+// ==================== GET ALL COMMENTS OF LOGGED IN USER ====================
+const getAllCommentsOfLoggedinUser = async (req, res) => {
     try {
         const comments = await Comment.find({ userId: req.body._id })
 
@@ -71,15 +71,15 @@ const getAllCommentsOfLoggedinUser = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
-// ------------------------------------------------------------------
-const getAllCommentsOfParticularArticle = async (req, res, next) => {
+// ==================== GET ALL COMMENTS OF PERTICULAR ARTICLE ====================
+const getAllCommentsOfParticularArticle = async (req, res) => {
     try {
         const comments = await Comment.find({ articleId: req.params.articleId })
 
@@ -90,14 +90,14 @@ const getAllCommentsOfParticularArticle = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
-// ------------------------------------------------------
+// ==================== GET ALL COMMENTS BY USER AND ARTICLE ====================
 const getCommentsByUserAndArticle = async (req, res, next) => {
     try {
         const comments = await Comment.find({
@@ -112,14 +112,14 @@ const getCommentsByUserAndArticle = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
-// ----------------------------------------------
+// ==================== DELETE COMMENT ====================
 const deleteComment = async (req, res, next) => {
     try {
         const comment = await Comment.findById(req.params.id)
@@ -132,7 +132,7 @@ const deleteComment = async (req, res, next) => {
         }
 
         if (JSON.stringify(req.user._id) !== JSON.stringify(comment.userId)) {
-            return res.status(404).json({
+            return res.status(401).json({
                 status: 'Failed',
                 message: 'You can not delete this comment because You are not the author of this comment'
             })
@@ -146,7 +146,7 @@ const deleteComment = async (req, res, next) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })

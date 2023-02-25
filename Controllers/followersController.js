@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Followers = require('../Models/followersModel')
 const User = require('../Models/userModel')
 
+// ==================== FOLLOW ====================
 const createFollow = async (req, res) => {
     try {
         if (JSON.stringify(req.user._id) === JSON.stringify(req.body.userId)) {
@@ -14,9 +15,9 @@ const createFollow = async (req, res) => {
         const userexists = await User.findById(req.body.userId)
 
         if (!userexists) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'Failed',
-                message: `${req.body.userId} does not exists`
+                message: `User does not exists which is you follow`
             })
         }
 
@@ -26,9 +27,9 @@ const createFollow = async (req, res) => {
         })
 
         if (data) {
-            return res.status(200).json({
+            return res.status(400).json({
                 status: 'Failed',
-                message: `You are already following ${req.body.user}`
+                message: `You are already following`
             })
         }
 
@@ -43,13 +44,14 @@ const createFollow = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
+// ==================== GET ALL FOLLOWERS ====================
 const getAllFollowers = async (req, res) => {
     try {
 
@@ -64,13 +66,14 @@ const getAllFollowers = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
+// ==================== GET ALL FOLLOWING ====================
 const getAllFollowing = async (req, res) => {
     try {
         const following = await Followers.find({
@@ -84,13 +87,14 @@ const getAllFollowing = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
     }
 }
 
+// ==================== UNFOLLOW ====================
 const unfollow = async (req, res) => {
     try {
         const data = await Followers.findOne({
@@ -99,9 +103,9 @@ const unfollow = async (req, res) => {
         })
 
         if (!data) {
-            return res.status(404).json({
+            return res.status(400).json({
                 status: 'Failed',
-                message: `You not follow ${req.params.userId}`
+                message: 'You do not follow this user'
             })
         }
 
@@ -113,7 +117,7 @@ const unfollow = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(404).json({
+        res.status(400).json({
             status: 'Error',
             message: err.message
         })
