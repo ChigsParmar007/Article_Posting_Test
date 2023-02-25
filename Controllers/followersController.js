@@ -54,10 +54,34 @@ const createFollow = async (req, res) => {
 // ==================== GET ALL FOLLOWERS ====================
 const getAllFollowers = async (req, res) => {
     try {
+        // const followers = await Followers.find({
+        //     userId: req.user._id
+        // })
 
-        const followers = await Followers.find({
-            userId: req.user._id
-        })
+        const followers = await Followers.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'followId',
+                    foreignField: '_id',
+                    as: 'followers'
+                }
+            },
+            {
+                $unwind: '$followers'
+            },
+            {
+                $match: {
+                    'userId': req.user._id
+                }
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    'followers': 1
+                }
+            }
+        ])
 
         res.status(200).json({
             status: 'Success',
@@ -76,9 +100,34 @@ const getAllFollowers = async (req, res) => {
 // ==================== GET ALL FOLLOWING ====================
 const getAllFollowing = async (req, res) => {
     try {
-        const following = await Followers.find({
-            followId: req.user._id
-        })
+        // const following = await Followers.find({
+        //     followId: req.user._id
+        // })
+
+        const following = await Followers.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'following'
+                }
+            },
+            {
+                $unwind: '$following'
+            },
+            {
+                $match: {
+                    'followId': req.user._id
+                }
+            },
+            {
+                $project: {
+                    '_id': 0,
+                    'following': 1
+                }
+            }
+        ])
 
         res.status(200).json({
             status: 'Success',

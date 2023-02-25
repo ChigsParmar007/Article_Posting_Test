@@ -62,7 +62,7 @@ const updateComment = async (req, res) => {
 // ==================== GET ALL COMMENTS OF LOGGED IN USER ====================
 const getAllCommentsOfLoggedinUser = async (req, res) => {
     try {
-        const comments = await Comment.find({ userId: req.body._id })
+        const comments = await Comment.find({ userId: req.user._id })
 
         res.status(200).json({
             status: 'Success',

@@ -35,6 +35,64 @@ const createArticle = async (req, res) => {
     }
 }
 
+// ==================== GET ALL ARTICLES ====================
+const getAllArticles = async (req, res) => {
+    try {
+        // const articles = await Article.find()
+        const articles = await Article.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'topics',
+                    localField: 'topicId',
+                    foreignField: '_id',
+                    as: 'topic'
+                }
+            },
+            {
+                $unwind: '$user'
+            },
+            {
+                $unwind: '$topic'
+            },
+            {
+                $project: {
+                    _id: {
+                        id: '$_id',
+                        content: '$content' 
+                    },
+                    user: {
+                        _id: 1,
+                        'userName': 1
+                    },
+                    topic: {
+                        _id: 1,
+                        topicName: 1
+                    }
+                }
+            }
+        ])
+
+        res.status(200).json({
+            status: 'Success',
+            length: articles.length,
+            articles
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'Error',
+            message: error.message
+        })
+    }
+}
+
 // ==================== UPDATE ARTICLE ====================
 const updateArticle = async (req, res) => {
     try {
@@ -253,6 +311,7 @@ const getArticlesOfFollowingUsers = async (req, res) => {
 
 module.exports = {
     createArticle,
+    getAllArticles,
     updateArticle,
     getArticlesByTopic,
     getArticlesByUser,

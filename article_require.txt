@@ -1,6 +1,7 @@
 2.
-Need to create Project for article posting. where user should be able to register and logic and create topic. and can create artical and with selected topic
-and user can follow and unfollow other user. can get articles of the following users and recent article and user can comment on article.
+Need to create Project for article posting. where user should be able to register and logic and create topic.
+and can create artical and with selected topic and user can follow and unfollow other user. 
+can get articles of the following users and recent article and user can comment on article.
 
 APIS- --> register user
       --> login user
@@ -48,32 +49,3 @@ unfollow
 get all followers
 get all followings
 
-
-
-index.js
-app.js
-
-Models
-userModel.js
-topicModel.js
-articleModel.js
-commentModel.js
-followersModel.js
-
-
-Routers
-userRouter.js
-topicRouter.js
-articleRouter.js
-commentRouter.js
-followersRoute.js
-
-
-Controllers
-userController.js
-authController.js
-topicController.js
-articleController.js
-commentController.js
-followersController.js
-handleFactory.js

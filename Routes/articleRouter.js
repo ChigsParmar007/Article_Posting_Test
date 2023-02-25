@@ -1,10 +1,9 @@
 const express = require('express')
-const Article = require('../Models/articleModel')
 const router = express.Router()
 const { protect } = require('../Controllers/authController')
-const { getAll } = require('../Controllers/hadleFactory')
 const {
     createArticle,
+    getAllArticles,
     updateArticle,
     getArticlesByTopic,
     getArticlesByUser,
@@ -17,7 +16,7 @@ const {
 
 router
     .route('/')
-    .get(getAll(Article))
+    .get(getAllArticles)
 
 router
     .route('/getMostRecentArticles/:number')

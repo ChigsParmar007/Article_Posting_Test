@@ -3,7 +3,8 @@ const Topic = require('../Models/topicModel')
 // ==================== CREATE TOPIC ====================
 const createTopic = async (req, res, next) => {
     try {
-        const existsTopic = await Topic.find({ topicName: req.body.topicName })
+        const existsTopic = await Topic.findOne({ topicName: req.body.topicName })
+
         if (existsTopic) {
             return res.status(400).json({
                 status: 'Failed',
@@ -68,7 +69,37 @@ const updateTopic = async (req, res, next) => {
 // ==================== GET TOPIC BY TOPIC NAME ====================
 const getTopicByTopicName = async (req, res, next) => {
     try {
-        const topic = await Topic.findOne({ topicName: req.params.topicName })
+        // const topic = await Topic.findOne({ topicName: req.params.topicName })
+        const topic = await Topic.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: '$user'
+            },
+            {
+                $match: {
+                    topicName: req.params.topicName
+                }
+            },
+            {
+                $project: {
+                    _id: {
+                        id: '$_id',
+                        topicName: '$topicName',
+                    },
+                    user: {
+                        _id: 1,
+                        userName: 1
+                    }
+                }
+            }
+        ])
 
         res.status(200).json({
             status: 'Success',
@@ -83,8 +114,53 @@ const getTopicByTopicName = async (req, res, next) => {
     }
 }
 
+// ==================== GET ALL TOPICS ====================
+const getAllTopics = async (req, res) => {
+    try {
+        // const topics = await Topic.find()
+
+        const topics = await Topic.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: '$user'
+            },
+            {
+                $project: {
+                    _id: {
+                        id: '$_id',
+                        topicName: '$topicName',
+                    },
+                    user: {
+                        _id: 1,
+                        userName: 1
+                    }
+                }
+            }
+        ])
+
+        res.status(200).json({
+            status: 'Success',
+            length: topics.length,
+            topics
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'Error',
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     createTopic,
     getTopicByTopicName,
-    updateTopic
+    updateTopic,
+    getAllTopics
 }
