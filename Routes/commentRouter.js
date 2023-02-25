@@ -10,6 +10,8 @@ const {
     getCommentsByUserAndArticle
 } = require('../Controllers/commentController')
 
+router.use(protect)
+
 router
     .route('/getAllCommentsOfParticularArticle/:articleId')
     .get(getAllCommentsOfParticularArticle)
@@ -17,9 +19,6 @@ router
 router
     .route('/getCommentsByUserAndArticle')
     .post(getCommentsByUserAndArticle)
-
-// Use a middleware to identify the user to perform below actions
-router.use(protect)
 
 router
     .route('/')

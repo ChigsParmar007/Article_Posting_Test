@@ -8,10 +8,6 @@ const app = express()
 
 app.use(express.json())
 
-// const test  {
-//     console.log('test')
-// })
-
 app.use('/api/user', userRouter)
 app.use('/api/topic', topicRouter)
 app.use('/api/article', articleRouter)

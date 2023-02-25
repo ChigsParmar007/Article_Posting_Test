@@ -8,6 +8,8 @@ const {
     getAllTopics
 } = require('../Controllers/topicController')
 
+router.use(protect)
+
 router
     .route('/')
     .get(getAllTopics)
@@ -15,9 +17,6 @@ router
 router
     .route('/:topicName')
     .get(getTopicByTopicName)
-
-
-router.use(protect)
 
 router
     .route('/')

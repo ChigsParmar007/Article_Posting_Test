@@ -14,6 +14,8 @@ const {
     getCurrentlyLoggedinUserArticles
 } = require('../Controllers/articleController')
 
+router.use(protect)
+
 router
     .route('/')
     .get(getAllArticles)
@@ -33,9 +35,6 @@ router
 router
     .route('/getArticlesByUserAndTopic')
     .post(getArticlesByUserAndTopic)
-
-// Use a middleware to identify the user to perform below actions
-router.use(protect)
 
 router
     .route('/')
