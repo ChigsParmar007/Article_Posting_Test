@@ -11,9 +11,7 @@ const schema = new mongoose.Schema({
         ref: 'user',
         required: [true, 'Currently logged in User Id is required.']
     }
-},
-    { versionKey: false }
-)
+})
 
 const followersSchema = mongoose.model('follower', schema)
 

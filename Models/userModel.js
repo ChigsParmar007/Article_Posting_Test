@@ -59,9 +59,7 @@ const schema = new mongoose.Schema({
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date
-},
-    { versionKey: false }
-)
+})
 
 schema.pre('save', async function (next) {
     if (!this.isModified('password')) return next()

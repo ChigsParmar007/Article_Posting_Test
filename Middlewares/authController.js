@@ -1,6 +1,7 @@
 const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const User = require('../Models/userModel')
+const AppError = require('../Utils/appError')
 
 const protect = async (req, res, next) => {
     let token
@@ -40,6 +41,19 @@ const protect = async (req, res, next) => {
     }
 }
 
+const signupMiddleware = async (req, res, next) => {
+    if (!req.body.firstName) return next(new AppError('Provide First Name', 400))
+    if (!req.body.lastName) return next(new AppError('Provide Last Name', 400))
+    if (!req.body.userName) return next(new AppError('Provide User Name', 400))
+    if (!req.body.email) return next(new AppError('Provide Email', 400))
+    if (!req.body.phone) return next(new AppError('Provide Phone Number', 400))
+    if (!req.body.password) return next(new AppError('Provide Password', 400))
+    if (!req.body.passwordConfirm) return next(new AppError('Provide Password Confirm', 400))
+
+    next()
+}
+
 module.exports = {
-    protect
+    protect,
+    signupMiddleware
 }

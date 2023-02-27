@@ -13,13 +13,14 @@ const DB = process.env.MONGO_URI
 
 mongoose.set('strictQuery', true)
 mongoose
-    .connect(DB, {})
+    .connect(DB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
     .then(() => {
         console.log('MongoDB Cluster Connected')
     })
-    .catch(err => {
-        console.log(err)
-    })
+    .catch(error => handleError(error))
 
 const PORT = process.env.PORT || 5000
 
