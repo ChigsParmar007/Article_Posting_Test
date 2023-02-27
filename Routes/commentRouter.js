@@ -1,36 +1,27 @@
 const express = require('express')
 const router = express.Router()
-const { protect } = require('../Middlewares/authController')
+const { protect } = require('../Middlewares/authMiddleware')
+const { createCommentMiddleware, updateCommentMiddleware } = require('../Middlewares/commentMiddleware')
 const {
     createComment,
     updateComment,
     deleteComment,
-    getAllCommentsOfLoggedinUser,
     getAllCommentsOfParticularArticle,
-    getCommentsByUserAndArticle
 } = require('../Controllers/commentController')
 
 router.use(protect)
 
 router
-    .route('/getAllCommentsOfParticularArticle/:articleId')
-    .get(getAllCommentsOfParticularArticle)
-
-router
-    .route('/getCommentsByUserAndArticle')
-    .post(getCommentsByUserAndArticle)
-
-router
     .route('/')
-    .post(createComment)
-
-router
-    .route('/getAllCommentsOfLoggedinUser')
-    .get(getAllCommentsOfLoggedinUser)
+    .post(createCommentMiddleware, createComment)
 
 router
     .route('/:id')
-    .patch(updateComment)
+    .patch(updateCommentMiddleware, updateComment)
     .delete(deleteComment)
+
+router
+    .route('/getAllCommentsOfParticularArticle/:articleId')
+    .get(getAllCommentsOfParticularArticle)
 
 module.exports = router

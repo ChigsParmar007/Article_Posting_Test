@@ -22,7 +22,6 @@ const createSendToken = (user, statuscode, res) => {
 
 // ==================== REGISTER USER ====================
 const signUp = catchAsync(async (req, res, next) => {
-
     const user = await User.create(req.body)
     user.password = undefined
 

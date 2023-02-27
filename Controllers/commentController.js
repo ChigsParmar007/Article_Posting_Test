@@ -1,163 +1,69 @@
 const Comment = require('../Models/commentModel')
+const Article = require('../Models/articleModel')
+const AppError = require('../Utils/appError')
+const catchAsync = require('../Utils/catchAsync')
 
 // ==================== CREATE COMMENT ====================
-const createComment = async (req, res) => {
-    try {
-        const comment = await Comment.create({
-            comment: req.body.comment,
-            rating: req.body.rating,
-            articleId: req.body.articleId,
-            userId: req.user._id
-        })
-        res.status(201).json({
-            status: 'Success',
-            comment
-        })
+const createComment = catchAsync(async (req, res, next) => {
+    const articleExists = await Article.findById(req.body.articleId)
+
+    if (!articleExists) {
+        return next(new AppError('The article you are creating a comment is does not exist', 404))
     }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
+    const comment = await Comment.create(req.body)
+
+    res.status(201).json({
+        comment
+    })
+})
 
 // ==================== UPDATE COMMENT ====================
-const updateComment = async (req, res) => {
-    try {
-        const comment = await Comment.findById(req.params.id)
+const updateComment = catchAsync(async (req, res, next) => {
+    const comment = await Comment.findOne({ _id: req.params.id, userId: req.body.userId })
 
-        if (!comment) {
-            return res.status(404).json({
-                status: 'Failed',
-                message: 'comment not found'
-            })
-        }
-
-        if (JSON.stringify(req.user._id) !== JSON.stringify(comment.userId)) {
-            return res.status(401).json({
-                status: 'Failed',
-                message: 'You can not update this comment because You are not the author of this comment'
-            })
-        }
-
-        const updatedData = await Comment.findByIdAndUpdate(req.params.id, {
-            comment: req.body.comment,
-            rating: req.body.rating
-        }, { new: true })
-
-        res.status(200).json({
-            status: 'Success',
-            updatedData
-        })
+    if (!comment) {
+        return next(new AppError('You can not update this comment because You are not the author of this comment or omment not found', 404))
     }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
 
-// ==================== GET ALL COMMENTS OF LOGGED IN USER ====================
-const getAllCommentsOfLoggedinUser = async (req, res) => {
-    try {
-        const comments = await Comment.find({ userId: req.user._id })
+    const updatedData = await Comment.findByIdAndUpdate(req.params.id, {
+        comment: req.body.comment,
+        rating: req.body.rating
+    }, { new: true })
 
-        res.status(200).json({
-            status: 'Success',
-            length: comments.length,
-            comments
-        })
-    }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
-
-// ==================== GET ALL COMMENTS OF PERTICULAR ARTICLE ====================
-const getAllCommentsOfParticularArticle = async (req, res) => {
-    try {
-        const comments = await Comment.find({ articleId: req.params.articleId })
-
-        res.status(200).json({
-            status: 'Success',
-            length: comments.length,
-            comments
-        })
-    }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
-
-// ==================== GET ALL COMMENTS BY USER AND ARTICLE ====================
-const getCommentsByUserAndArticle = async (req, res, next) => {
-    try {
-        const comments = await Comment.find({
-            userId: req.body.userId,
-            articleId: req.body.articleId
-        })
-
-        res.status(200).json({
-            status: 'Success',
-            length: comments.length,
-            comments
-        })
-    }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
+    res.status(200).json({
+        updatedData
+    })
+})
 
 // ==================== DELETE COMMENT ====================
-const deleteComment = async (req, res, next) => {
-    try {
-        const comment = await Comment.findById(req.params.id)
+const deleteComment = catchAsync(async (req, res, next) => {
+    const comment = await Comment.findOne({ _id: req.params.id, userId: req.body.userId })
 
-        if (!comment) {
-            return res.status(404).json({
-                status: 'Failed',
-                message: 'comment not found'
-            })
-        }
-
-        if (JSON.stringify(req.user._id) !== JSON.stringify(comment.userId)) {
-            return res.status(401).json({
-                status: 'Failed',
-                message: 'You can not delete this comment because You are not the author of this comment'
-            })
-        }
-
-        const deletedData = await Comment.findByIdAndDelete(req.params.id)
-
-        res.status(200).json({
-            status: 'Success',
-            deletedData
-        })
+    if (!comment) {
+        return next(new AppError('You can not delete this comment because You are not the author of this comment or omment not found', 404))
     }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
+
+    const deletedData = await Comment.findByIdAndDelete(req.params.id)
+
+    res.status(200).json({
+        deletedData
+    })
+})
+
+// ==================== GET ALL COMMENTS OF PERTICULAR ARTICLE ====================
+const getAllCommentsOfParticularArticle = catchAsync(async (req, res) => {
+
+    const comments = await Comment.find({ articleId: req.params.articleId })
+
+    res.status(200).json({
+        length: comments.length,
+        comments
+    })
+})
 
 module.exports = {
     createComment,
-    getAllCommentsOfLoggedinUser,
-    getAllCommentsOfParticularArticle,
-    getCommentsByUserAndArticle,
     updateComment,
-    deleteComment
+    deleteComment,
+    getAllCommentsOfParticularArticle
 }

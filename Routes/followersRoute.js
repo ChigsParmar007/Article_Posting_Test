@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { protect } = require('../Middlewares/authController')
+const { protect } = require('../Middlewares/authMiddleware')
 const {
     createFollow,
     getAllFollowers,

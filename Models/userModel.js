@@ -23,7 +23,7 @@ const schema = new mongoose.Schema({
         validate: [validator.isEmail, 'Provide a valid email']
     },
     phone: {
-        type: Number,
+        type: String,
         required: [true, 'Phone number is Required.'],
         unique: true
     },
@@ -52,14 +52,14 @@ const schema = new mongoose.Schema({
         default: true,
         select: false
     },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    },
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date
-})
+},
+    {
+        timestamps: true
+    }
+)
 
 schema.pre('save', async function (next) {
     if (!this.isModified('password')) return next()

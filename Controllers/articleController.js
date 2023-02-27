@@ -1,323 +1,177 @@
-const Article = require('../Models/articleModel')
-const Comment = require('../Models/commentModel')
-const Followers = require('../Models/followersModel')
 const Topic = require('../Models/topicModel')
+const Article = require('../Models/articleModel')
+const Followers = require('../Models/followersModel')
+const Comment = require('../Models/commentModel')
+const AppError = require('../Utils/appError')
+const catchAsync = require('../Utils/catchAsync.js')
+const mongoose = require('mongoose')
 
 // ==================== CREATE ARTICLE ====================
-const createArticle = async (req, res) => {
-    try {
-        const validateTopic = await Topic.findById(req.body.topicId)
+const createArticle = catchAsync(async (req, res, next) => {
+    const topicExists = await Topic.findById(req.body.topicId)
 
-        if (!validateTopic) {
-            return res.status(404).json({
-                status: 'Failed',
-                message: `${req.body.topicId} does not exists`
-            })
-        }
-
-        const article = new Article({
-            topicId: req.body.topicId,
-            content: req.body.content,
-            userId: req.user._id
-        })
-        await article.save()
-
-        res.status(201).json({
-            status: 'Success',
-            article
-        })
+    if (!topicExists) {
+        return next(new AppError('The topic you are creating an article is does not exist', 404))
     }
-    catch (err) {
-        res.status(404).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
 
-// ==================== GET ALL ARTICLES ====================
-const getAllArticles = async (req, res) => {
-    try {
-        // const articles = await Article.find()
-        const articles = await Article.aggregate([
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'user'
-                }
-            },
-            {
-                $lookup: {
-                    from: 'topics',
-                    localField: 'topicId',
-                    foreignField: '_id',
-                    as: 'topic'
-                }
-            },
-            {
-                $unwind: '$user'
-            },
-            {
-                $unwind: '$topic'
-            },
-            {
-                $project: {
-                    _id: {
-                        id: '$_id',
-                        content: '$content' 
-                    },
-                    user: {
-                        _id: 1,
-                        'userName': 1
-                    },
-                    topic: {
-                        _id: 1,
-                        topicName: 1
-                    }
-                }
-            }
-        ])
+    const article = new Article(req.body)
+    await article.save()
 
-        res.status(200).json({
-            status: 'Success',
-            length: articles.length,
-            articles
-        })
-    } catch (error) {
-        res.status(400).json({
-            status: 'Error',
-            message: error.message
-        })
-    }
-}
+    res.status(201).json({
+        article
+    })
+})
 
 // ==================== UPDATE ARTICLE ====================
-const updateArticle = async (req, res) => {
-    try {
-        const article = await Article.findById(req.params.id)
+const updateArticle = catchAsync(async (req, res, next) => {
+    const article = await Article.findOne({ _id: req.params.id, userId: req.body.userId })
 
-        if (!article) {
-            return res.status(404).json({
-                status: 'Failed',
-                message: 'Article not found'
-            })
-        }
-
-        if (JSON.stringify(req.user._id) !== JSON.stringify(article.userId)) {
-            return res.status(401).json({
-                status: 'Failed',
-                message: 'You can not update this article because You are not the author of this article'
-            })
-        }
-
-        const updatedData = await Article.findByIdAndUpdate(req.params.id, {
-            content: req.body.content,
-        }, { new: true })
-
-        res.status(200).json({
-            status: 'Success',
-            updatedData
-        })
+    if (!article) {
+        return next(new AppError('You can not update this article because You are not the author of this article', 404))
     }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
 
-// ==================== GET CURRENTLY LOGGED IN USER ARTICLE ====================
-const getCurrentlyLoggedinUserArticles = async (req, res) => {
-    try {
-        const articles = await Article.find({ userId: req.user._id })
+    const updatedData = await Article.findByIdAndUpdate(req.params.id, {
+        content: req.body.content,
+    }, { new: true })
 
-        res.status(200).json({
-            status: 'Success',
-            length: articles.length,
-            articles
-        })
-    }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
-
-// ==================== GET ARTICLES BY TOPIC ====================
-const getArticlesByTopic = async (req, res, next) => {
-    try {
-        const articles = await Article.find({ topicId: req.params.topicId })
-
-        res.status(200).json({
-            status: 'Success',
-            length: articles.length,
-            articles
-        })
-    } catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
-
-// ==================== GET ARTICLES BY USER ====================
-const getArticlesByUser = async (req, res) => {
-    try {
-        const articles = await Article.find({ userId: req.params.userId })
-
-        res.status(200).json({
-            status: 'Success',
-            length: articles.length,
-            articles
-        })
-    } catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
-
-// ==================== GET ARTICLES BY USER AND TOPIC ====================
-const getArticlesByUserAndTopic = async (req, res) => {
-    try {
-        const articles = await Article.find({
-            topicId: req.body.topicId,
-            userId: req.body.userId
-        })
-
-        res.status(200).json({
-            status: 'Success',
-            length: articles.length,
-            articles
-        })
-    }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
+    res.status(200).json({
+        updatedData
+    })
+})
 
 // ==================== DELETE ARTICLE ====================
-const deleteArticle = async (req, res) => {
-    try {
-        const getArticle = await Article.findById(req.params.id)
+const deleteArticle = catchAsync(async (req, res, next) => {
+    const getArticle = await Article.findOne({ _id: req.params.id, userId: req.body.userId })
 
-        if (!getArticle) {
-            return res.status(404).json({
-                status: 'Failed',
-                message: 'Article not found'
-            })
-        }
-
-        if (JSON.stringify(req.user._id) !== JSON.stringify(article.userId)) {
-            return res.status(401).json({
-                status: 'Failed',
-                message: 'You can not update this article because You are not the author of this article'
-            })
-        }
-
-        const article = await Article.findByIdAndDelete(req.params.id)
-
-        await Comment.deleteMany({ articleId: article._id })
-
-        res.status(200).json({
-            status: 'Success'
-        })
+    if (!getArticle) {
+        return next(new AppError('You can not update this article because You are not the author of this article or article not found', 404))
     }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
+
+    const article = await Article.findByIdAndDelete(req.params.id)
+
+    await Comment.deleteMany({ articleId: article._id })
+
+    res.status(200).json({
+        message: 'Article deleted successfully'
+    })
+})
+
+// ==================== GET ALL ARTICLES ====================
+const getAllArticles = catchAsync(async (req, res, next) => {
+    // const articles = await Article.find()
+    const articles = await Article.aggregate([
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'user'
+            }
+        },
+        {
+            $lookup: {
+                from: 'topics',
+                localField: 'topicId',
+                foreignField: '_id',
+                as: 'topic'
+            }
+        },
+        {
+            $unwind: '$user'
+        },
+        {
+            $unwind: '$topic'
+        },
+        {
+            $project: {
+                _id: {
+                    id: '$_id',
+                    content: '$content'
+                },
+                user: {
+                    _id: 1,
+                    'userName': 1
+                },
+                topic: {
+                    _id: 1,
+                    topicName: 1
+                }
+            }
+        }
+    ])
+
+    res.status(200).json({
+        length: articles.length,
+        articles
+    })
+})
+
+// ==================== GET ARTICLES BY TOPIC ====================
+const getArticlesByTopic = catchAsync(async (req, res, next) => {
+    const articles = await Article.find({ topicId: mongoose.Types.ObjectId(req.params.topicId) })
+
+    res.status(200).json({
+        length: articles.length,
+        articles
+    })
+})
 
 // ==================== GET MOST RECENT ARTICLES ====================
-const getMostRecentArticles = async (req, res) => {
-    try {
-        const articles = await Article.aggregate([
-            {
-                $sort: { createdAt: -1 }
-            },
-            {
-                $limit: Number(req.params.number)
-            }
-        ])
+const getMostRecentArticles = catchAsync(async (req, res, next) => {
+    const articles = await Article.aggregate([
+        {
+            $sort: { createdAt: -1 }
+        },
+        {
+            $limit: Number(req.params.number)
+        }
+    ])
 
-        res.status(200).json({
-            status: 'Status',
-            length: articles.length,
-            articles
-        })
-    }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
-}
+    res.status(200).json({
+        length: articles.length,
+        articles
+    })
+})
 
 // ==================== GET ARTICLES OF FOLLOWING USER ====================
-const getArticlesOfFollowingUsers = async (req, res) => {
-    try {
-        const articles = await Followers.aggregate([
-            {
-                '$lookup': {
-                    'from': 'articles',
-                    'localField': 'userId',
-                    'foreignField': 'userId',
-                    'as': 'articles'
-                }
-            },
-            {
-                '$unwind': '$articles'
-            },
-            {
-                '$match': {
-                    'followId': req.user._id
-                }
-            },
-            {
-                '$project': {
-                    '_id': 0,
-                    'articles': 1
-                }
+const getArticlesOfFollowingUsers = async (req, res, next) => {
+    const articles = await Followers.aggregate([
+        {
+            '$lookup': {
+                'from': 'articles',
+                'localField': 'userId',
+                'foreignField': 'userId',
+                'as': 'articles'
             }
-        ])
+        },
+        {
+            '$unwind': '$articles'
+        },
+        {
+            '$match': {
+                'followId': req.body.userId
+            }
+        },
+        {
+            '$project': {
+                '_id': 0,
+                'articles': 1
+            }
+        }
+    ])
 
-        res.status(200).json({
-            status: 'Status',
-            length: articles.length,
-            articles
-        })
-    }
-    catch (err) {
-        res.status(400).json({
-            status: 'Error',
-            message: err.message
-        })
-    }
+    res.status(200).json({
+        length: articles.length,
+        articles
+    })
 }
 
 module.exports = {
     createArticle,
-    getAllArticles,
     updateArticle,
-    getArticlesByTopic,
-    getArticlesByUser,
-    getArticlesByUserAndTopic,
     deleteArticle,
+    getAllArticles,
+    getArticlesByTopic,
     getMostRecentArticles,
-    getArticlesOfFollowingUsers,
-    getCurrentlyLoggedinUserArticles
+    getArticlesOfFollowingUsers
 }

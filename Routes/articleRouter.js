@@ -1,56 +1,43 @@
 const express = require('express')
 const router = express.Router()
-const { protect } = require('../Middlewares/authController')
+const { protect } = require('../Middlewares/authMiddleware')
+const { createArticleMiddleware, updateArticleMiddleware } = require('../Middlewares/articleMiddleware')
 const {
     createArticle,
-    getAllArticles,
     updateArticle,
-    getArticlesByTopic,
-    getArticlesByUser,
-    getArticlesByUserAndTopic,
     deleteArticle,
+    getAllArticles,
+    getArticlesByTopic,
     getMostRecentArticles,
-    getArticlesOfFollowingUsers,
-    getCurrentlyLoggedinUserArticles
+    getArticlesOfFollowingUsers
 } = require('../Controllers/articleController')
 
 router.use(protect)
 
 router
     .route('/')
+    .post(createArticleMiddleware, createArticle)
+
+router
+    .route('/:id')
+    .patch(updateArticleMiddleware, updateArticle)
+    .delete(deleteArticle)
+
+router
+    .route('/')
     .get(getAllArticles)
+
+router
+    .route('/getArticlesOfFollowingUsers')
+    .get(getArticlesOfFollowingUsers)
 
 router
     .route('/getMostRecentArticles/:number')
     .get(getMostRecentArticles)
 
+
 router
-    .route('/getArticlesByTopic/:topicId')
+    .route('/:topicId')
     .get(getArticlesByTopic)
-
-router
-    .route('/getArticlesByUser/:userId')
-    .get(getArticlesByUser)
-
-router
-    .route('/getArticlesByUserAndTopic')
-    .post(getArticlesByUserAndTopic)
-
-router
-    .route('/')
-    .post(createArticle)
-
-router
-    .route('/getCurrentlyLoggedinUserArticle')
-    .get(getCurrentlyLoggedinUserArticles)
-
-router
-    .route('/:id')
-    .patch(updateArticle)
-    .delete(deleteArticle)
-
-router
-    .route('/getArticlesOfFollowingUsers')
-    .get(getArticlesOfFollowingUsers)
 
 module.exports = router

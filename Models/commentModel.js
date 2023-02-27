@@ -19,12 +19,12 @@ const schema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'user',
         required: [true, 'User id is required.']
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now()
     }
-})
+},
+    {
+        timestamps: true
+    }
+)
 
 const commentSchema = mongoose.model('comment', schema)
 

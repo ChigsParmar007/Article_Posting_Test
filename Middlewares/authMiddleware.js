@@ -2,8 +2,10 @@ const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const User = require('../Models/userModel')
 const AppError = require('../Utils/appError')
+const catchAsync = require('../Utils/catchAsync')
+const mongoose = require('mongoose')
 
-const protect = async (req, res, next) => {
+const protect = catchAsync(async (req, res, next) => {
     let token
     if (
         req.headers.authorization &&
@@ -13,33 +15,19 @@ const protect = async (req, res, next) => {
     }
 
     if (!token) {
-        return res.status(403).json({
-            status: 'Failed',
-            message: 'You can not logged in. first log in and try again.'
-        })
+        return next(new AppError('You can not logged in. first log in and try again.', 403))
     }
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+    const currentUser = await User.findById(mongoose.Types.ObjectId(decoded.id))
 
-    try {
-        const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
-        const currentUser = await User.findById(decoded.id)
-
-        if (!currentUser) {
-            return res.status(401).json({
-                status: 'Failed',
-                message: 'user belonging to this token does no longer exist.'
-            })
-        }
-
-        req.user = currentUser
-        next()
+    if (!currentUser) {
+        return next(new AppError('user belonging to this token does no longer exist.', 401))
     }
-    catch (err) {
-        return res.status(401).json({
-            status: 'Failed',
-            message: 'Invalid Token.'
-        })
-    }
-}
+    req.user = currentUser
+    req.body.userId = currentUser._id
+
+    next()
+})
 
 const signupMiddleware = async (req, res, next) => {
     const missingValue = []
@@ -51,7 +39,7 @@ const signupMiddleware = async (req, res, next) => {
     if (!req.body.password) missingValue.push('Provide Password')
     if (!req.body.passwordConfirm) missingValue.push('Provide Password Confirm')
 
-    if (missingValue.length !== 0) return next(new AppError(`requird missing values: ${missingValue}`, 400))
+    if (missingValue.length !== 0) return next(new AppError(`requird missing values : ${missingValue}`, 400))
 
     if (req.body.password > req.body.passwordConfirm) {
         return next(new AppError('Password and Password Confirm are not match', 400))

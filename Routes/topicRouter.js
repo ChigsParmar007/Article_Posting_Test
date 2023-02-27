@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const { protect } = require('../Middlewares/authController')
+const { protect } = require('../Middlewares/authMiddleware')
+const { createTopicMiddleware, updateTopicMiddleware } = require('../Middlewares/topicMiddleware')
 const {
     createTopic,
-    getTopicByTopicName,
     updateTopic,
     getAllTopics
 } = require('../Controllers/topicController')
@@ -15,15 +15,11 @@ router
     .get(getAllTopics)
 
 router
-    .route('/:topicName')
-    .get(getTopicByTopicName)
-
-router
     .route('/')
-    .post(createTopic)
+    .post(createTopicMiddleware, createTopic)
 
 router
     .route('/:topicId')
-    .patch(updateTopic)
+    .patch(updateTopic, updateTopicMiddleware)
 
 module.exports = router

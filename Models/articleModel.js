@@ -18,12 +18,12 @@ const schema = new mongoose.Schema({
     published: {
         type: Boolean,
         default: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now()
     }
-})
+},
+    {
+        timestamps: true
+    }
+)
 
 const articleSchema = mongoose.model('Article', schema)
 
