@@ -18,13 +18,13 @@ const schema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: [true, 'Email is Required.'],
+        required: [true, 'Email address is Required.'],
         lowercase: true,
         validate: [validator.isEmail, 'Provide a valid email']
     },
     phone: {
-        type: String,
-        required: [true, 'Phone is Required.'],
+        type: Number,
+        required: [true, 'Phone number is Required.'],
         unique: true
     },
     password: {

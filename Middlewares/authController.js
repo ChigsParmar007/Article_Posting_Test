@@ -42,18 +42,52 @@ const protect = async (req, res, next) => {
 }
 
 const signupMiddleware = async (req, res, next) => {
-    if (!req.body.firstName) return next(new AppError('Provide First Name', 400))
-    if (!req.body.lastName) return next(new AppError('Provide Last Name', 400))
-    if (!req.body.userName) return next(new AppError('Provide User Name', 400))
-    if (!req.body.email) return next(new AppError('Provide Email', 400))
-    if (!req.body.phone) return next(new AppError('Provide Phone Number', 400))
-    if (!req.body.password) return next(new AppError('Provide Password', 400))
-    if (!req.body.passwordConfirm) return next(new AppError('Provide Password Confirm', 400))
+    const missingValue = []
+    if (!req.body.firstName) missingValue.push('Provide First Name')
+    if (!req.body.lastName) missingValue.push('Provide Last Name')
+    if (!req.body.userName) missingValue.push('Provide User Name')
+    if (!req.body.email) missingValue.push('Provide Email')
+    if (!req.body.phone) missingValue.push('Provide Phone Number')
+    if (!req.body.password) missingValue.push('Provide Password')
+    if (!req.body.passwordConfirm) missingValue.push('Provide Password Confirm')
+
+    if (missingValue.length !== 0) return next(new AppError(`requird missing values: ${missingValue}`, 400))
+
+    if (req.body.password > req.body.passwordConfirm) {
+        return next(new AppError('Password and Password Confirm are not match', 400))
+    }
+
+    req.body.phone = Number.parseInt(req.body.phone)
+
+    if ('number' !== typeof (req.body.phone)) {
+        return next(new AppError('Phone Number is Must be a number', 400))
+    }
+
+    const phoneRegex = /^[9876]+[0-9]{9}$/
+    if (!phoneRegex.test(req.body.phone)) {
+        return next(new AppError('Enter valid Phone number. Mobile number always start with 6, 7, 8 and 9 and must be a 10 digit', 400))
+    }
+
+    const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/
+    if (!emailRegex.test(req.body.email)) {
+        return next(new AppError('Enter valid Email Address', 400))
+    }
+
+    next()
+}
+
+const signinMiddleware = async (req, res, next) => {
+    const missingValue = []
+    if (!req.body.userName) missingValue.push('Provide User Name')
+    if (!req.body.password) missingValue.push('Provide password')
+
+    if (missingValue.length > 0) return next(new AppError(`requird missing values: ${missingValue}`, 400))
 
     next()
 }
 
 module.exports = {
     protect,
-    signupMiddleware
+    signupMiddleware,
+    signinMiddleware
 }

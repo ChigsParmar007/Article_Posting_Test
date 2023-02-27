@@ -6,8 +6,9 @@ const handleCastErrorDB = err => {
 }
 
 const handleDuplicateFieldsDB = err => {
-    const value = err.message.match(/(["'])(\\?.)*?\1/)[0]
-    const message = `Duplicate field value: ${value}. Use another value!`
+    let value = err.message.match(/(["'])(\\?.)*?\1/)[0]
+    value = value.replace(/"|'/g, '')
+    const message = `${value} is already taken. Use another value!`
     return new AppError(message, 400)
 }
 
@@ -37,32 +38,20 @@ const sendErrorProd = (err, req, res) => {
                 message: err.message
             })
         }
+        
         // B) Programming or other unknown error: don't leak error details
         // 1) Log error
         console.error('ERROR: ', err)
         // 2) Send generic message
         return res.status(500).json({
             status: 'error',
-            message: 'Something went very wrong!'
+            message: 'Something went wrong!'
         })
     }
 
-    // B) RENDERED WEBSITE
-    // A) Operational, trusted error: send message to client
-    if (err.isOperational) {
-        // console.log(err)
-        return res.status(err.statusCode).render('error', {
-            title: 'Something went wrong!',
-            msg: err.message
-        })
-    }
-    // B) Programming or other unknown error: don't leak error details
-    // 1) Log error
-    console.error('ERROR: ', err)
-    // 2) Send generic message
-    return res.status(err.statusCode).render('error', {
-        title: 'Something went wrong!',
-        msg: 'Try again.'
+    return res.status(500).json({
+        status: 'error',
+        message: 'Something went very wrong!'
     })
 }
 
